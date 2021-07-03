@@ -13,47 +13,47 @@
 + 工作区:
   平时存放项目的地方
 + 暂存区:
-  .git/index文件, 临时保存改动, 保存即将提交到文件列表信息
+  **.git/index** 文件, 临时保存改动, 保存即将提交到文件列表信息
 + 本地库:
-  ./git文件夹, 安全存放数据的位置, 保存所以提交的数据, 其中HEAD指向最新放入仓库的版本
+  **./git** 文件夹, 安全存放数据的位置, 保存所以提交的数据, 其中 **HEAD指向最新放入仓库的版本** 
 
 ## 1.2 基本命令
 
 ### 1.2.1 初始化
 
-+ git init
++ `git init` 
   将对应文件夹初始化为本地git库(目录下添加.git文件夹)
 
 ### 1.2.2 查看状态
 
-+ git status
++ `git status` 
   查看工作区, 暂缓区的状态
 
 ### 1.2.3 添加操作
 
-+ git add [file name]         /     git add [folder name/]
++ `git add [filename]`         /     `git add [foldername/]`
   将工作区的内容添加到暂缓区
-  + file name  添加单个文件
-  + folder name/  将整个文件夹及目录下的文件全部添加到暂缓区
-+ git add .
+  + **filename**  添加单个文件
+  + **foldername/**  将整个文件夹及目录下的文件全部添加到暂缓区
++ `git add .` 
   将该目录下的所有文件全部提交
 
 ### 1.2.4 提交到本地库操作
 
-+ git commit -m “commit message” [file name] / [folder name/]
-  commit message部分不能为空, 否则会提交失败
-+ git commit -a
++ `git commit -m “commit message” [file name] / [folder name/]`
+  **commit message** 部分不能为空, 否则会提交失败
++ `git commit -a`
   直接添加并提交到本地库
 
 ### 1.2.5 从暂缓区中撤销add
 
-+ git rm --cached [file name]	
++ `git rm --cached [file name]` 	
 
 ### 1.2.6 查看历史记录
 
 > 打印全部信息
 
-+ git log
++ `git log`
   信息全面但过多
 
   ![image-20210630232500720](https://gitee.com/four_four/picgo/raw/master/img/20210630232507.png) 
@@ -62,21 +62,24 @@
 
 1.2.7 打印简介信息
 
-+ git log  --pretty=oneline 
++ `git log  --pretty=oneline` 
   打印在一行
 
   ![image-20210630232855336](https://gitee.com/four_four/picgo/raw/master/img/20210630232855.png) 
 
-+ git log --oneline
++ `git log --oneline`
   更加简洁的打印历史
+  
   ![image-20210630233131060](https://gitee.com/four_four/picgo/raw/master/img/20210630233131.png) 
 
 1.2.8 打印HEAD&{num}信息
 
-+ git reflog
++ `git reflog`
   打印出 的`HEAD@{number}`   number为距离最新一次提交的距离  `HEAD@{0}` 指向最新一次提交
 
   最前面的 `fe198b1` 等十六进制为索引值
+  
+  
   ![image-20210630234523808](https://gitee.com/four_four/picgo/raw/master/img/20210630234523.png)  
 
 
@@ -85,25 +88,31 @@
 
 > 基于索引值
 
-+ git reset –hard [索引值]
++ `git reset –hard [索引值]` 
 
   前进
-  ![image-20210701000156091](https://gitee.com/four_four/picgo/raw/master/img/20210701000156.png) 
+  
 
+  ![image-20210701000156091](https://gitee.com/four_four/picgo/raw/master/img/20210701000156.png) 
+  
   后退
+  
+  
    ![image-20210701000423643](https://gitee.com/four_four/picgo/raw/master/img/20210701000423.png) 
 
 > 基于 ^ 符号
 
-+ git reset  --hard HEAD^
++ `git reset  --hard HEAD^` 
   ^可以有多个, 有几个^就代表后退几个版本
   只能后退不能前进
+  
+  
   ![image-20210701001055824](https://gitee.com/four_four/picgo/raw/master/img/20210701001055.png) 
   ![image-20210701001128744](https://gitee.com/four_four/picgo/raw/master/img/20210701001128.png) 
 
 > 基于 ~ 符号
 
-+ git reset --hard HEAD~\<number>
++ `git reset --hard HEAD~\<number>` 
   number 指后退几步
   只能后退不能前进 
 
@@ -142,18 +151,18 @@
 > 小结
 
 1. 前提: 删除前, 文件存在时的状态必须提交到本地库
-2. 操作: git reset --hard [指针位置]
+2. 操作: `git reset --hard [指针位置]` 
 
 
 
 ### 1.2.11 比较文件
 
-+ git diff [file name]
++ `git diff [file name]` 
   比较工作区中的file 和 本地库中的HEAD@{0}版本的不同
-+ git diff [本地库中的历史版本] [filename]
++ `git diff [本地库中的历史版本] [filename]` 
   比较工作区中的file 和本地库中对应的历史版本的不同
-+ git diff
-  比较当前目录下所有file 和 HEAD@{0}版本的不同
++ `git diff` 
+  比较当前目录下所有**file** 和 **HEAD@{0}** 版本的不同
 
 
 
@@ -170,28 +179,38 @@
 
 > 分支操作
 
-+ git branch -v
++ `git branch -v`
   查看已有分支
-  ![image-20210702235547939](https://gitee.com/four_four/picgo/raw/master/img/20210703113604.png)  
+  
 
-+ git branch [branch name]
+  ![image-20210702235547939](https://gitee.com/four_four/picgo/raw/master/img/20210703113604.png)  
+  
++ `git branch [branch name]` 
   创建新分支
+  
+
   ![image-20210703000008997](https://gitee.com/four_four/picgo/raw/master/img/20210703113604.png) 
 
   ![image-20210703000039103](https://gitee.com/four_four/picgo/raw/master/img/20210703113609.png) 
-
-+ git checkout [branch name]
+  
++ `git checkout [branch name]` 
 
   切换分支名
+
+
   ![image-20210703000130852](https://gitee.com/four_four/picgo/raw/master/img/20210703113613.png) 
 
 + 合并分支
 
   1. 先切换到被合并的分支(即合并后会被修改的分支)
-     git checkout [branch name]
+     `git checkout [branch name]`
+     
+     
      ![image-20210703000424779](https://gitee.com/four_four/picgo/raw/master/img/20210703113616.png) 
   2. 执行merge命令
-     git merge [branch name]
+     `git merge [branch name]` 
+     
+     
      ![image-20210703000455109](https://gitee.com/four_four/picgo/raw/master/img/20210703113626.png) 
 
 + 解决冲突
