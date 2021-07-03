@@ -168,27 +168,27 @@
 
 + git branch -v
   查看已有分支
-  ![image-20210702235547939](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210702235547939.png) 
+  ![image-20210702235547939](https://gitee.com/four_four/picgo/raw/master/img/20210703113604.png)  
 
 + git branch [branch name]
   创建新分支
-  ![image-20210703000008997](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210703000008997.png) 
+  ![image-20210703000008997](https://gitee.com/four_four/picgo/raw/master/img/20210703113604.png) 
 
-  ![image-20210703000039103](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210703000039103.png) 
+  ![image-20210703000039103](https://gitee.com/four_four/picgo/raw/master/img/20210703113609.png) 
 
 + git checkout [branch name]
 
   切换分支名
-  ![image-20210703000130852](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210703000130852.png) 
+  ![image-20210703000130852](https://gitee.com/four_four/picgo/raw/master/img/20210703113613.png) 
 
 + 合并分支
 
   1. 先切换到被合并的分支(即合并后会被修改的分支)
      git checkout [branch name]
-     ![image-20210703000424779](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210703000424779.png) 
+     ![image-20210703000424779](https://gitee.com/four_four/picgo/raw/master/img/20210703113616.png) 
   2. 执行merge命令
      git merge [branch name]
-     ![image-20210703000455109](C:/Users/18045/AppData/Roaming/Typora/typora-user-images/image-20210703000455109.png) 
+     ![image-20210703000455109](https://gitee.com/four_four/picgo/raw/master/img/20210703113626.png) 
 
 + 解决冲突
 
