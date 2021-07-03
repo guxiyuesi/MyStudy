@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 # 1. studyGit
 
 ## 1.1 初始Git
@@ -56,7 +60,7 @@
 
 
 
-> 1.2.7 打印简介信息
+1.2.7 打印简介信息
 
 + git log  --pretty=oneline 
   打印在一行
@@ -67,7 +71,7 @@
   更加简洁的打印历史
   ![image-20210630233131060](https://gitee.com/four_four/picgo/raw/master/img/20210630233131.png) 
 
-> 1.2.8 打印HEAD&{num}信息
+1.2.8 打印HEAD&{num}信息
 
 + git reflog
   打印出 的`HEAD@{number}`   number为距离最新一次提交的距离  `HEAD@{0}` 指向最新一次提交
