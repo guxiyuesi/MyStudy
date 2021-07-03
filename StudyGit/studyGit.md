@@ -220,3 +220,43 @@
 ### 1.3.2 查看已有的远程库地址别名
 
 + `git remote -v` 
+
+### 1.3.3 推送操作
+
++ `git push [地址(别)名] [推送到远程库中的分支名]`
++ push时登录失败时:
+  1. 使用`git config --global --unset credential.helper` 或
+     `git config --global credential.helper store`命令
+  2. 重新push一次即可
+
+### 1.3.4 克隆操作
+
++ `git clone [远程仓库地址名]`
+  1. 完整的把远程库下载到本地
+  2. 创建origin远程地址别名
+  3. 初始化本地库
+
+### 1.3.5 远程库修改后的拉取操作
+
++ `git pull [远程库地址(别)名] [远程库分支名]` 
+  = `git fetch [远程库地址(别)名] [远程库分支名]` + `git merge [远程库地址(别)名/远程库分支名]` 
+
+### 1.3.6 SSH登录
+
+1. 进入当前用户家目录
+   `cd ~` 
+2. 删除**.ssh** 文件
+   `rm -rvf .ssh`
+3. 运行命令生成ssh密钥登录
+   `.ssh-keygen -t rsa -C [ssh地址]` 
+4. 进入.ssh目录查看文件列表
+   `cd .ssh`
+   `ls` 
+5. 查看**id_ras.pub** 文件内容
+   `cat id_ras.pub` 
+6. 复制文件内容, 登录github, 点击头像-> setting -> **SSH and GPG keys** 
+7. **new SSH Key** 
+8. 输入复制的密钥信息
+9. 回到git bash 将远程地址别名更改为git类型
+   `git remote rm origin` 
+   `git remote add origin [git远程地址名]`
