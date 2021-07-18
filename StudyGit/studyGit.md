@@ -283,3 +283,31 @@
 9. 回到git bash 将远程地址别名更改为git类型
    `git remote rm origin` 
    `git remote add origin [git远程地址名]`
+
+## 1.4 出错解决方案
+
+### 1.4.1 无法pull
+
+问题:
+
+`refusing to merge unrelated histories`
+
+解决方案:
+
+`git pull origin master --allow-unrelated-histories`
+
+### 1.4.2 无法push
+
+问题:
+
+`error: failed to push some refs to 'https://gitee.com/four_four/law_firm.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.`
+
+解决方案:
+
+pull以后强制push
+
+`git push -f origin master`
