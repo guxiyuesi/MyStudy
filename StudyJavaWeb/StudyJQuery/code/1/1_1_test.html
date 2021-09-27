@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Title</title>
+    </head>
+
+    <body>
+        <button id="bn">hello world</button>
+    </body> 
+
+    <!--原生java操纵DOM元素-->
+    <!-- <script type="text/javascript">
+        let bn = document.getElementById("bn");
+        alert(bn.innerText);
+    </script> -->
+
+    <!--使用JQuery操纵DOM元素-->
+    <script type="text/javascript" src="../JQuery/jquery_3_6_0.js"></script>
+    <script type="text/javascript">
+        $(function(){alert("test")});       //相当于window.onload = function(){alert("test")};
+        let $bn = $("#bn");                  //相当于let bn = document.getElementById("bn");
+        $bn.click(function(){
+            alert("单击事件");
+        })
+    </script>
+</html>

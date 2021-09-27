@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>about$</title>
+    </head>
+
+    <body>
+        <span>
+            <div id="div1">span-div1</div>
+            <div id="div2">span-div2</div>
+        </span>
+    </body>
+
+
+    <script type="text/javascript" src="../JQuery/jquery_3_6_0.js"></script>
+    <script type="text/javascript">
+        //传入的参数是 函数
+        $(function() {
+            alert("test");
+        })
+
+        //传入的参数是 HTML字符串
+        $('<span>' +
+            ' <div id="div3">span-div3</div>' +
+            '<div id="div4">span-div4</div>' +
+            '</span>').appendTo("body");
+
+        //传入的参数是 选择器字符串
+        $("#div1");
+
+        //传入的参数是 DOM对象
+        let $div1 = $(document.getElementById(div1));
+    </script>
+</html>
