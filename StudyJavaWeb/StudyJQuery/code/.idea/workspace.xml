@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="214f80de-e20f-43cb-b380-5cf8b3703b76" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="E:\MyGit\MyStudy\StudyJavaWeb\StudyJQuery\code\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1yiz83fvzB630Qr5Ugt1QJuTosM" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Tomcat 9.0.53" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.53" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings />
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="214f80de-e20f-43cb-b380-5cf8b3703b76" name="Default Changelist" comment="" />
+      <created>1632749033104</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1632749033104</updated>
+      <workItem from="1632749040154" duration="285000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="361" y="69" key="#Project_Structure" timestamp="1632749045629">
+      <screen x="0" y="0" width="1536" height="821" />
+    </state>
+    <state x="361" y="69" key="#Project_Structure/0.0.1536.821@0.0.1536.821" timestamp="1632749045629" />
+    <state x="549" y="151" key="FileChooserDialogImpl" timestamp="1632749302818">
+      <screen x="0" y="0" width="1536" height="821" />
+    </state>
+    <state x="549" y="151" key="FileChooserDialogImpl/0.0.1536.821@0.0.1536.821" timestamp="1632749302818" />
+    <state x="178" y="0" key="new project wizard" timestamp="1632749326668">
+      <screen x="0" y="0" width="1536" height="821" />
+    </state>
+    <state x="178" y="0" key="new project wizard/0.0.1536.821@0.0.1536.821" timestamp="1632749326668" />
+  </component>
+</project>
