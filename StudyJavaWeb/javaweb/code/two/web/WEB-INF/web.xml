@@ -6,6 +6,20 @@
     <servlet>
         <servlet-name>TestServletMapping</servlet-name>
         <servlet-class>indi.guxiyuesi.studyServlet.FirstServlet</servlet-class>
+        <init-param>
+            <param-name>user</param-name>
+            <param-value>guxiyuesi</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>339558</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>type</param-name>
+            <param-value>s</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>

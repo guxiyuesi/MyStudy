@@ -1,12 +1,31 @@
 package indi.guxiyuesi.studyServlet;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.util.Enumeration;
 
+@WebServlet("/demo1")
 public class FirstServlet implements Servlet {
+    public FirstServlet() {
+        System.out.println("创建了FirstServlet对象");
+    }
+
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
+        System.out.println("初始化了FirstServlet对象");
+        System.out.println(servletConfig.getServletName());
+        Enumeration<String> enumeration = servletConfig.getInitParameterNames();
+        while (enumeration.hasMoreElements()) {
+            String s = enumeration.nextElement();
+            System.out.println(servletConfig.getInitParameter(s));
+        }
 
+        ServletContext sc = servletConfig.getServletContext();
+        //获取当前Servlet的虚拟路径 这里为空
+        System.out.println(sc.getContextPath());
+        //获取运行当前Servlet的Tomcat服务器信息
+        System.out.println(sc.getServerInfo());
     }
 
     @Override
