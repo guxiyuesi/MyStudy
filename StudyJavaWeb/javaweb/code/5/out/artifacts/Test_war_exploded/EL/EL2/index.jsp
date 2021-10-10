@@ -27,7 +27,7 @@
             <td>${person.score}</td>
         </tr>
     </table><br/>
-    人物综合信息:${person}
+    人物综合信息:${person}<br/>
     人物综合信息:<%=request.getAttribute("person").toString()%>
 </body>
 </html>

@@ -724,3 +724,389 @@ $(person.id) , 默认经过了两步骤:
    + 大于等于  `>=` 或 `ge` 
    + 小于等于   `<=` 或 `le` 
    + `empty`        变量为null, 长度为0的字符串, size为0的集合
+     `$(empty sessionScope.num3)`  判断num3是否为空并输出
+
+## 7. JSTL
+
+JSP Standard Tag        JSP标准标签库, JSP为开发者提供的一系列的标签, 使用这些标签可以完成一些逻辑处理, 如循环遍历等, 当代码更加简洁, 不再出现JSP脚本穿插的情况
+
+### 7.1 JSTL的使用
+
+1. 在项目中导入两个jar包(必须导入到 `web/WEB-INF` 下的文件夹中)
+   `jstl.jar`    `standard.jar` 
+2. 在JSP页面开始的地方导入JSTL标签库
+3. 在需要的地方使用
+
+```jsp
+<c:forEach var="user" items="${users}">
+    ${user}<br/>
+</c:forEach>
+```
+
+### 7.2 JSTL中的常用标签
+
+1. `set` 向域对象中添加/修改数据
+
+   ```jsp
+   <c:set var="name" value="hello" scope="request"></c:set>
+   <c:set  target="${user}" property="name" value="abc"></c:set>
+   ${requestScope.name}
+   ${user.name}
+   ```
+
+   注意:
+
+   1. `target` 和 `scope` 不能同时存在
+   2. `var` 中不能有表达式
+
+2. `out` 功能基本等同于`${}` 但是可以设置默认值
+
+   ```jsp
+   <c:set var="name" value="hello" scope="request"></c:set>
+   <c:out value="${name}" default="未定义"></c:out><br/>
+   <c:out value="${w}" default="未定义"></c:out>
+   
+   <%-- 
+   输出结果:    
+   hello
+   未定义
+   --%>
+   ```
+
+3. `remove` 删除域对象中的数据
+
+   ```jsp
+   <c:set var="name" value="hello" scope="request"></c:set>
+   <c:out value="${name}" default="未定义"></c:out><br/>
+   <c:remove var="name" scope="request"></c:remove>
+   <c:out value="${name}" default="未定义"></c:out>
+   <%-- 
+   输出结果:    
+   hello
+   未定义
+   --%>
+   ```
+
+4. `catch` 捕获异常
+
+   ```jsp
+   <c:catch var="error">
+       <%
+       int i = 10 / 0;
+       %>
+   </c:catch>
+   ${error}
+   
+   <%--
+   java.lang.ArithmeticException: / by zero
+   --%>
+   ```
+
+5. 条件判断标签        `if`     `choose`
+
+   ```jsp
+   <%
+   int num1 = 1;
+   int num2 = 2;
+   request.setAttribute("num1", num1);
+   request.setAttribute("num2", num2);
+   %>
+   <c:if test="${num1 > num2}" >true</c:if>
+   <c:if test="${num1 <= num2}" >false</c:if>
+   
+   <hr/>
+   
+   <c:choose>
+       <c:when test="${num1 > num2}">true</c:when>
+       <c:otherwise>false</c:otherwise>
+   </c:choose>
+   ```
+
+6. 循环遍历标签   `forEach` 
+
+   ```jsp
+   <%-- 
+   items : 遍历的集合
+   var : 遍历时的遍历名
+   begin : 开始下标
+   end : 结束下标
+   step : 步长
+   varStatus : 遍历过程中的一些属性值
+   --%>
+   
+   <%
+   List<String> list = new ArrayList<>();
+   list.add("1");
+   list.add("2");
+   list.add("3");
+   list.add("4");
+   list.add("5");
+   list.add("6");
+   list.add("7");
+   list.add("8");
+   list.add("9");
+   request.setAttribute("list", list);
+   %>
+   
+   <c:forEach items="${list}" var="str" begin="2" end="8" step="2" varStatus="over">
+       ${over.count}-${str}<br/>
+   </c:forEach>
+   
+   <%-- 
+   1-3
+   2-5
+   3-7
+   4-9
+   --%>
+   ```
+
+7. 格式化标签库常用标签
+
+   ```jsp
+   <%
+   	request.setAttribute("date", new Date());
+   %>
+   <fmt:formatDate value="${date}" pattern="yyyy-MM-dd HH:mm:ss"></fmt:formatDate><br/>
+   <fmt:formatNumber value="432.532" maxIntegerDigits="2" maxFractionDigits="1"></fmt:formatNumber>
+   
+   <%--
+   2021-10-04 21:37:56
+   32.5
+   --%>
+   ```
+
+### 8. 案例
+
+```java
+package indi.guxiyuesi;
+
+/**用户信息类  User类 */
+public class User {
+    private int id;
+    private String name;
+    private int age;
+
+    public User(int id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+```java
+package indi.guxiyuesi;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**前后端交互类 UserServlet类*/
+@WebServlet("/index")
+public class UserServlet extends HttpServlet {
+    /** users 保存用户信息, 用来在request中保存后进入其他jsp界面
+     *  无论UserServlet类被访问几次, users只创建一次, 因为UserServlet是单例模式
+     * */
+    private Map<Integer, User> users;
+
+    /** 初始化users中的参数 模拟从数据库中取值
+     * */
+    public  UserServlet() {
+        users = new HashMap<>();
+        users.put(1, new User(1, "张三", 86));
+        users.put(2, new User(2, "李四", 78));
+        users.put(3, new User(3, "王五", 10));
+    }
+
+    /** doGet 类主要负责浏览器 或 a标签提交的请求
+     * */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //设置编码形式, 防止乱码
+        req.setCharacterEncoding("UTF-8");
+        //获取请求中的method参数, 如果为null, 赋予默认值为findAll
+        String method = req.getParameter("method");
+        if(method == null) {
+            method = "findAll";
+        }
+
+        /** method == findAll : 展示数据
+         *  method == add : 进入添加数据界面
+         *  method == delete : 直接删除数据并展示删除后的数据
+         *  method == update : 进入修改数据界面
+         * */
+        if(method.equals("findAll")) {
+            req.setAttribute("users", users);
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+        } else if(method.equals("add")) {
+            resp.sendRedirect("add.jsp");
+        } else if(method.equals("delete")) {
+            int key = Integer.parseInt(req.getParameter("key"));
+            users.remove(key);
+            resp.sendRedirect("/index");
+        } else if(method.equals("update")) {
+            int key = Integer.parseInt(req.getParameter("key"));
+            User user = users.get(key);
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/update.jsp").forward(req, resp);
+        }
+    }
+
+    /** doPost 主要负责从表单中传递的数据*/
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        String id =req.getParameter("id");
+        String name = req.getParameter("name");
+        String age =req.getParameter("age");
+        try {
+            users.put(Integer.parseInt(id), new User(Integer.parseInt(id), name, Integer.parseInt(age)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            //重新进入并展示添加或修改后的数据
+            resp.sendRedirect("/index");
+        }
+
+    }
+}
+
+```
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: 18045
+  Date: 2021-10-04
+  Time: 22:11
+  To change this template use File | Settings | File Templates.
+      
+   index.jsp
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+  <head>
+    <title>Information</title>
+  </head>
+  <body>
+    <form action="/index" method="get">
+      <table>
+        <tr>
+          <th>编号</th>
+          <th>姓名</th>
+          <th>年龄</th>
+        </tr>
+
+        <c:forEach items="${users}" var="user" >
+          <tr>
+            <td>${user.value.id}</td>
+            <td>${user.value.name}</td>
+            <td>${user.value.age}</td>
+            <td><a href="/index?method=delete&key=${user.value.id}">删除</a>
+                <a href="/index?method=update&key=${user.value.id}">修改</a></td>
+          </tr>
+        </c:forEach>
+
+      </table><br/>
+
+    </form>
+    <a href="/index?method=add">添加</a>
+  </body>
+</html>
+
+```
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: 18045
+  Date: 2021-10-04
+  Time: 23:13
+  To change this template use File | Settings | File Templates.
+      
+  add.jsp
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Add</title>
+</head>
+<body>
+    <form action="/index" method="post">
+        编号:<input type="text" name="id" /><br/>
+        姓名:<input type="text" name="name" /><br/>
+        年龄:<input type="text" name="age" /><br/>
+        <input type="submit" value="添加">
+    </form>
+</body>
+</html>
+```
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: 18045
+  Date: 2021-10-04
+  Time: 23:54
+  To change this template use File | Settings | File Templates.
+      
+  update.jsp
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Update</title>
+</head>
+<body>
+    <form action="/index" method="post">
+        编号:<input type="text" name="id" value="${user.id}" readonly/><br/>
+        姓名:<input type="text" name="name" value="${user.name}" /><br/>
+        年龄:<input type="text" name="age" value="${user.age}"/><br/>
+        <input type="submit" value="修改">
+    </form>
+</body>
+</html>
+
+```
+
+
+
