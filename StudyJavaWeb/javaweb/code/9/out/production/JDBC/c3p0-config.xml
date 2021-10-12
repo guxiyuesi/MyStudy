@@ -1,0 +1,14 @@
+<!-- 配置连接池的文件名必须是c3p0-config.xml -->
+<c3p0-config>
+    <named-config name="testc3p0">
+
+        <property name="user">root</property>
+        <property name="password">339558</property>
+        <property name="jdbcUrl">jdbc:mysql://localhost:3306/mytest?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC</property>
+        <property name="driverClass">com.mysql.cj.jdbc.Driver</property>
+        <property name="acquireIncrement">5</property>
+        <property name="initialPoolSize">20</property>
+        <property name="minPoolSize">2</property>
+        <property name="maxPoolSize">40</property>
+    </named-config>
+</c3p0-config>
