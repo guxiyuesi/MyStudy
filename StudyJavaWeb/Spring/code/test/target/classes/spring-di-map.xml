@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    <bean id="student1" class="com.guxiyuesi.springIoC.Student" p:id="1" p:name="mary" scope="singleton"></bean>
+    <bean id="student2" class="com.guxiyuesi.springIoC.Student" p:id="2" p:name="lisa" scope="prototype"></bean>
+    <bean id="theClass" class="com.guxiyuesi.springIoC.TheClass">
+        <property name="classId" value="1"></property>
+        <property name="className" value="1班"></property>
+        <property name="studentMap">
+            <map>
+                <entry key="1" value-ref="student1"></entry>
+                <entry key="2" value-ref="student2"></entry>
+            </map>
+        </property>
+    </bean>
+</beans>

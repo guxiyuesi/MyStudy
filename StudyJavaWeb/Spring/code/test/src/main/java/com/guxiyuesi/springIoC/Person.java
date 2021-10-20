@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author 叶意
- * @ClassName Test
- * @Description 学习SpringIoC
- * @createTime 2021年10月16日  16:07:00
+ * @ClassName Person
+ * @Description TODO
+ * @createTime 2021年10月20日  19:43:00
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class Person {
     private int id;
     private String name;
+    private Car car2;
 }
