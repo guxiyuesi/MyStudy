@@ -503,3 +503,87 @@ lisa  456
 */
 ```
 
+
+
+#### 1.1.9 Autowire  自动装载
+
+自动装载相当于自动化的DI, 可以从IoC容器中自动取出对应的对象进行注入
+
+查找的方式有两种:
+
++ `byName` 
+  查找 id名 和 需要注入的属性名相同的bean对象, 并将该对象注入
++ ![image-20211020200230686](https://gitee.com/four_four/picgo/raw/master/img/20211020200230.png) 
+
++ `byType` 
+  根据类型进行自动装载
+  此时配置的对应的bean对象只能有一个
+  ![image-20211020200554341](https://gitee.com/four_four/picgo/raw/master/img/20211020200554.png) 
+
+```java
+//Car类
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Car {
+    private int id;
+    private String name;
+    private String brand;
+}
+```
+
+```java
+//Person类
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Person {
+    private int id;
+    private String name;
+    private Car car2;
+}
+```
+
+```xml
+<!-- 
+自动装载的方式: byName
+通过IoC容器获取到Person对象后输出结果为:
+Person(id=339558, name=张三, car2=Car(id=2, name=二手, brand=宝马))
+-->
+
+<bean id="car" class="com.guxiyuesi.springIoC.Car">
+    <property name="name" value="新品"></property>
+    <property name="id" value="1"></property>
+    <property name="brand" value="奔驰"></property>
+</bean>
+
+<bean id="car2" class="com.guxiyuesi.springIoC.Car">
+    <property name="name" value="二手"></property>
+    <property name="id" value="2"></property>
+    <property name="brand" value="宝马"></property>
+</bean>
+
+<bean id="person" class="com.guxiyuesi.springIoC.Person" autowire="byName">
+    <property name="id" value="339558"></property>
+    <property name="name" value="张三"></property>
+</bean>
+```
+
+```xml
+<!-- 
+通过byType进行装载
+输出person:
+Person(id=339558, name=张三, car2=Car(id=1, name=新品, brand=奔驰))
+-->
+<bean id="car" class="com.guxiyuesi.springIoC.Car">
+    <property name="name" value="新品"></property>
+    <property name="id" value="1"></property>
+    <property name="brand" value="奔驰"></property>
+</bean>
+
+<bean id="person" class="com.guxiyuesi.springIoC.Person" autowire="byType">
+    <property name="id" value="339558"></property>
+    <property name="name" value="张三"></property>
+</bean>
+```
+

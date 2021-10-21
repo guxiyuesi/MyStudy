@@ -14,13 +14,13 @@
         <property name="brand" value="奔驰"></property>
     </bean>
 
-    <bean id="car2" class="com.guxiyuesi.springIoC.Car">
+<!--    <bean id="car2" class="com.guxiyuesi.springIoC.Car">
         <property name="name" value="二手"></property>
         <property name="id" value="2"></property>
         <property name="brand" value="宝马"></property>
-    </bean>
+    </bean>-->
 
-    <bean id="person" class="com.guxiyuesi.springIoC.Person" autowire="byName">
+    <bean id="person" class="com.guxiyuesi.springIoC.Person" autowire="byType">
         <property name="id" value="339558"></property>
         <property name="name" value="张三"></property>
     </bean>
