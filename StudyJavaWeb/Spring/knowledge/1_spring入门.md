@@ -587,3 +587,189 @@ Person(id=339558, name=张三, car2=Car(id=1, name=新品, brand=奔驰))
 </bean>
 ```
 
+
+
+#### 1.1.10 Spring IoC基于注解开发
+
+Spring IoC的作用:
+
++ 创建项目中所需要的bean
++ 完成bean之间的依赖注入
+
+实现IoC功能的两种方式:
+
+1. 基于XML配置
+2. 基于注解配置
+
+基于注解配置的两个步骤
+
+1. 配置自动扫包
+
+   ```xml
+   <context:component-scan base-package="com.iocAnnotation"></context:component-scan>
+   ```
+
+2. 添加注解
+
+   ```java
+   @Data
+   @Component(value = "myScore")
+   public class Score {
+       @Value("78.0")
+       private float englishScore;
+       @Value("88.5")
+       private float mathScore;
+   }
+   ```
+
+   
+
+> 使用注解生成bean
+
+```java
+@Data
+@Component(value = "myScore")
+public class Score {
+    @Value("78.0")
+    private float englishScore;
+    @Value("88.5")
+    private float mathScore;
+}
+```
+
+等价于
+
+```xml
+<bean id="myScore" class="com.iocAnnotation.Score">
+	<property name="englishScore" value="78.0">	           </property>
+    <property name="mathScore" value="88.5">               </property>
+</bean>
+```
+
+`@Component`    相当于生成bean对象, 可以在bean对象中指定id的值
+
+`@Value`  相当于给变量赋值
+
+
+
+> DI
+
+```java
+@Data
+@Component
+public class Student {
+    @Value("1")
+    private int id;
+    @Value("张三")
+    private String name;
+    @Autowired
+    @Qualifier(value = "myScore")
+    private Score score;
+}
+```
+
+等价于
+
+```xml
+<bean id="student" class="com.iocAnnotation.Student">
+	<property name="id" value="1"></property>
+    <property name="name" value="张三"></property>
+    <property name="score" ref="myScore"></property>
+</bean>
+```
+
+注解完成DI的方式是使用自动装载
+
+`@Autowired`    通过 ==byType== 的方式进行自动装载
+
+`@Qualifier`    通过 ==byName== 的方式进行自动装载
+
+
+
+#### 1.1.11 模拟基于注解进行开发
+
+软件三层模型:
+
+![image-20211021190442253](https://gitee.com/four_four/picgo/raw/master/img/20211021190442.png) 
+
+==Controller== : 负责与客户端交互
+
+==Service== : 负责处理业务逻辑
+
+==Repository== : 负责与数据库交互
+
+模拟从客户端输入姓名, 经过三层架构后返回是否成绩的等级(优秀/及格/不及格)
+
+```java
+//Controller
+@Controller
+public class MyController {
+    @Autowired
+    private MyService myService;
+
+    //将客户端传来的数据传入到业务层
+    public String service(String name) {
+        return myService.getGrade(name);
+    }
+
+	//main函数等价于客户端
+    public static void main(String[] args) {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-grade.xml");
+        MyController myController = applicationContext.getBean(MyController.class);
+        System.out.println(myController.service("李四"));
+    }
+}
+```
+
+```java
+//Service
+@Service
+public class MyService {
+    @Autowired
+    private MyRepository myRepository;
+
+    //接收到Controller后, 向Repository层调用数据, 并对Repository层返回的数据进行处理
+    public String getGrade(String name){
+        Double score = myRepository.getScore(name);
+        String grade = "";
+        if(score < 60) {
+            grade = "不及格";
+        }
+        else if (score < 80) {
+            grade = "及格";
+        } else {
+            grade = "优秀";
+        }
+        return grade;
+    }
+}
+```
+
+```java
+@Repository
+public class MyRepository {
+    //用Map模拟数据库中的数据
+    private Map<String, Double> score;
+    MyRepository() {
+        score = new HashMap<>();
+        score.put("张三", 61.0);
+        score.put("李四", 73.4);
+    }
+
+    //接收到Service层传来的name后, 查找数据并返回
+    public Double getScore(String name) {
+        return score.get(name);
+    }
+}
+```
+
+
+
+
+
+### 1.2 AOP
+
+AOP(Aspect Oriented Programming)  面向切面编程
+
+AOP是OOP的补充, 具体是指程序运行时, **动态**的将非业务代码切入到业务代码中, 从而实现程序的解耦合，将业务代码抽象成一个对象, 对该切面对象编程就是面向切面编程.
+
