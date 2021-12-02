@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <meta charset="UTF-8">
+    <title>管理员</title>
+    <link rel="stylesheet" type="text/css" href="../css/admin.css">
+    <script type="text/javascript" src="js/jquery_3_6_0.js"></script>
+</head>
+
+<body>
+    <div><h2>管理员模式</h2></div>
+    <div id="value">
+        <div id="select">
+            <ul id="selectUL">
+                <li>
+                    <div class="selection" id="selectAdmin">管理员信息</div>
+                </li>
+                <li>
+                    <div class="selection" id="selectDoctor">医生信息</div>
+                </li>
+                <li>
+                    <div class="selection" id="selectPatient">病人信息</div>
+                </li>
+                <li>
+                    <div class="selection" id="selectDrug">药品信息</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="content">
+            <div id="adminInfo">
+                <div>
+                    <div class="forInline">
+                        <div id="adminAccountText" class="adminLabel">
+                            adminAccount: 
+                        </div>
+                    </div>
+
+                    <div class="forInline">
+                        <div id="adminNameText" class="adminLabel">
+                            adminName: 
+                        </div> 
+                        <div id="adminNameInput" >
+                            <input type="text" name="adminName" id="adminName" class="adminInput">
+                        </div>
+                    </div>
+
+                    <div class="forInline">
+                        <div id="adminGenderText" class="adminLabel">
+                            adminGender:
+                        </div>
+                        <div id="adminGenderInput">
+                            <input type="text" name="adminGender" id="adminGender" class="adminInput">
+                        </div>
+                    </div>
+
+                    <div class="forInline">
+                        <div id="adminPhoneNumText" class="adminLabel">
+                            adminPhoneNum:
+                        </div>
+                        <div id="adminPhoneNumInput">
+                            <input type="text" name="adminPhoneNum" id="adminPhoneNum">
+                        </div>
+                    </div>
+
+                    <div class="forInline">
+                        <div id="adminPasswordText" class="adminLabel">
+                            adminPassword:
+                        </div>
+                        <div id="adminPasswordInput" class="adminInput">
+                            <input type="text" name="adminPassword" id="adminPassword">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

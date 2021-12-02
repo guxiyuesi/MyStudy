@@ -25,7 +25,6 @@ public class Main {
 //            preparedStatement.setString(2, "111");
             ResultSet resultSet = preparedStatement.executeQuery();
             //遍历结果集
-            Thread.sleep(5000);
             while(resultSet.next()) {
                 String myUsername = resultSet.getString("username");
                 String myPassword = resultSet.getString("password");
@@ -35,8 +34,8 @@ public class Main {
             e.printStackTrace();
         }catch (SQLException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
+
+
 }

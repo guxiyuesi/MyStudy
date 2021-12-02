@@ -1,0 +1,19 @@
+h2 {
+    color: red;
+    text-align: center;
+    background-color: aquamarine;
+    margin-bottom: 40px;
+    font-size: xx-large;
+}
+
+#select {
+    position: relative;
+    left: 200px;
+    background-color: aqua;
+    width: 200px;
+    font-size: larger;
+}
+
+.selection {
+    
+}

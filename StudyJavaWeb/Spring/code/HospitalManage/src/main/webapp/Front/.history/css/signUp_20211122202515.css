@@ -1,0 +1,26 @@
+body {
+    background-image: url(../image/hospitalImage2.jpg);
+}
+
+#signUpAll {
+    background-color: aqua;
+    width: 400px;
+    height: 300px;
+    display: flexbox;
+    text-align: center;
+    margin-left: 590px;
+    margin-top: 230px;
+}
+
+#signUpTitle {
+    display: inline-block;
+}
+
+/* 调整输入框 */
+.signUpInputValue {
+    border-radius: 30px;
+    height: 40px;
+    width: 270px;
+    margin: 10px;
+    font-size: larger;
+}

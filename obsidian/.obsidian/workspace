@@ -1,0 +1,174 @@
+{
+  "main": {
+    "id": "99fb99d68a3a712f",
+    "type": "split",
+    "children": [
+      {
+        "id": "6bae6133c8812898",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "javaweb/5_JDBC.md",
+            "mode": "source"
+          }
+        },
+        "group": "95822434cba71577"
+      },
+      {
+        "id": "95861c9fc3150e36",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "javaweb/5_JDBC.md",
+            "mode": "preview"
+          }
+        },
+        "group": "95822434cba71577"
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a353714441dbfaba",
+    "type": "split",
+    "children": [
+      {
+        "id": "dcc33993d8d033f5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7758b27ba2832b0e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "d182188d45d9322d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "JDBC",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 251
+  },
+  "right": {
+    "id": "02188801e76b6e7b",
+    "type": "split",
+    "children": [
+      {
+        "id": "d4c64e4e61843695",
+        "type": "tabs",
+        "dimension": 45.2319587628866,
+        "children": [
+          {
+            "id": "00c8d050143b3fcd",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {}
+            }
+          },
+          {
+            "id": "c11332de2a14d02e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "javaweb/5_JDBC.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "9eb3b584cfd75a86",
+        "type": "tabs",
+        "dimension": 54.76804123711341,
+        "children": [
+          {
+            "id": "acedbbedd5f8875e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "javaweb/5_JDBC.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "718f293be2012749",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          },
+          {
+            "id": "c8a1abb9b43a3753",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "645e158d348f98bf",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "javaweb/5_JDBC.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 234,
+    "collapsed": true
+  },
+  "active": "6bae6133c8812898",
+  "lastOpenFiles": [
+    "javaweb/5_JDBC.md",
+    "debug/IDEA连接数据库问题.md",
+    "Spring/knowledge/1_spring入门.md",
+    "debug/修改css或js文件后不生效.md",
+    "操作系统/进程的控制.md",
+    "操作系统/进程的状态.md",
+    "操作系统/进程.md",
+    "操作系统/进程与程序的区别.md",
+    "操作系统/程序执行的方式.md",
+    "操作系统/进程管理.md"
+  ]
+}

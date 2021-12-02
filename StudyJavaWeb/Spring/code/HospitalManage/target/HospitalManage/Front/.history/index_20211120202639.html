@@ -1,0 +1,70 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script type="text/javascript" src="js/jquery_3_6_0.js"></script>
+
+</head>
+
+<body>
+<svg class="checkbox-symbol">
+    <symbol id="check" viewbox="0 0 12 10">
+        <polyline
+                points="1.5 6 4.5 9 10.5 1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+        ></polyline>
+    </symbol>
+</svg>
+<img src="./image/hospitalImage2.jpg"
+<div id="login_all">
+    <div class="login_div">
+        <h2>登录</h2>
+    </div>
+<div class="checkbox-container">
+    <form action="#" method="post">
+        <div class="user-div">
+            <input id="userName" class="user" placeholder="请输入账号"/><br/>
+        </div>
+        <div class="user-div">    
+        <input id="password" type="password" class="user" placeholder="请输入密码"/><br/>
+        </div>
+        角色:
+        <input class="checkbox-input" id="doctor" type="radio" name="radio_selection" checked="checked"/>
+        <label class="checkbox" for="doctor">
+            <span>
+              <svg width="12px" height="10px">
+                <use xlink:href="#check"></use>
+              </svg>
+            </span>
+            <span>doctor</span>
+        </label>
+
+        <input class="checkbox-input" id="patient" type="radio" name="radio_selection"/>
+        <label class="checkbox" for="patient">
+            <span>
+                <svg width="12px" height="10px">
+                    <use xlink:href="#check"></use>
+                </svg>
+            </span>
+            <span>patient</span>
+        </label>
+
+        <input class="checkbox-input" id="administrator" type="radio" name="radio_selection"/>
+        <label class="checkbox" for="administrator">
+            <span>
+              <svg width="12px" height="10px">
+                <use xlink:href="#check"></use>
+              </svg>
+            </span>
+            <span>administrator</span>
+        </label>
+        <input type="submit" value="登录" class="animated-button-2"/>
+    </form>
+</div>
+</div>
+
+</body>
+</html>

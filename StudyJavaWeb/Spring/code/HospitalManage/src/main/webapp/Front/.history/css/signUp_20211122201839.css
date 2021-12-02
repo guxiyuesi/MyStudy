@@ -1,0 +1,9 @@
+body {
+    background-image: url(../image/hospitalImage2.jpg);
+}
+
+#signUpAll {
+    background-color: aqua;
+    width: 400px;
+    display: flexbox;
+}

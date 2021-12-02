@@ -1,0 +1,6 @@
+$('#myButton').click(function(){
+    let temp = $(this).parents("tr").find(".a");
+    temp.array.forEach(element => {
+        
+    });
+})

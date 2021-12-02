@@ -1,0 +1,10 @@
+{
+  "strictLineBreaks": true,
+  "showFrontmatter": true,
+  "promptDelete": false,
+  "spellcheck": false,
+  "readableLineLength": true,
+  "communityPluginSortOrder": "downloadReverse",
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "current"
+}

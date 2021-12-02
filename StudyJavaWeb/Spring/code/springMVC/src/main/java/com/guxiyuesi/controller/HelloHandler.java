@@ -28,9 +28,10 @@ public class HelloHandler {
     }
 
     @RequestMapping(value = "/pojo")
+    @ResponseBody
     public String myPOJO(User user) {
         System.out.println(user);
-        return "index";
+        return user.toString();
     }
 
     @RequestMapping(value = "/forward")
@@ -38,8 +39,18 @@ public class HelloHandler {
         return "forward:/index.jsp";
     }
 
-    @RequestMapping(value = "redirect")
+    @RequestMapping(value = "/redirect")
     public String redirectRespond(){
         return "redirect:/index.jsp";
+    }
+
+    @RequestMapping("/arrayType")
+    @ResponseBody
+    public String arrayType(String[] names){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String name:names) {
+            stringBuilder.append(name + " ");
+        }
+        return stringBuilder.toString();
     }
 }

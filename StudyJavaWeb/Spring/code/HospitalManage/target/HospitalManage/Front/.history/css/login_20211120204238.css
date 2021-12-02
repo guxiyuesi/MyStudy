@@ -1,0 +1,13 @@
+body {
+    background-image: url(../image/hospitalImage2.jpg);
+    background-repeat: repeat;
+}
+
+.loginAll {
+    position: relative;
+    background-color: whitesmoke;
+    height: 400px;
+    width: 400px;
+    margin-left: auto;
+    margin-top: ;
+}

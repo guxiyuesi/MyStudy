@@ -1,0 +1,166 @@
+{
+  "workspaces": {
+    "linux内核完全注释": {
+      "main": {
+        "id": "99fb99d68a3a712f",
+        "type": "split",
+        "children": [
+          {
+            "id": "73b84cd8cee23975",
+            "type": "leaf",
+            "dimension": 62.737127371273715,
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "附件/pdf/linux内核完全解析.pdf"
+              }
+            }
+          },
+          {
+            "id": "f3fc890bb456a2bc",
+            "type": "leaf",
+            "dimension": 37.262872628726285,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "操作系统/微型计算机组成原理.md",
+                "mode": "source"
+              }
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "a353714441dbfaba",
+        "type": "split",
+        "children": [
+          {
+            "id": "dcc33993d8d033f5",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "7758b27ba2832b0e",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                }
+              },
+              {
+                "id": "d182188d45d9322d",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "",
+                    "matchingCase": true,
+                    "explainSearch": false,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 300,
+        "collapsed": true
+      },
+      "right": {
+        "id": "02188801e76b6e7b",
+        "type": "split",
+        "children": [
+          {
+            "id": "d4c64e4e61843695",
+            "type": "tabs",
+            "dimension": 45.2319587628866,
+            "children": [
+              {
+                "id": "00c8d050143b3fcd",
+                "type": "leaf",
+                "state": {
+                  "type": "advanced-tables-toolbar",
+                  "state": {}
+                }
+              },
+              {
+                "id": "c11332de2a14d02e",
+                "type": "leaf",
+                "state": {
+                  "type": "outgoing-link",
+                  "state": {
+                    "file": "操作系统/微型计算机组成原理.md",
+                    "linksCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "9eb3b584cfd75a86",
+            "type": "tabs",
+            "dimension": 54.76804123711341,
+            "children": [
+              {
+                "id": "acedbbedd5f8875e",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "操作系统/微型计算机组成原理.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": true,
+                    "unlinkedCollapsed": true
+                  }
+                }
+              },
+              {
+                "id": "718f293be2012749",
+                "type": "leaf",
+                "state": {
+                  "type": "calendar",
+                  "state": {}
+                }
+              },
+              {
+                "id": "c8a1abb9b43a3753",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true
+                  }
+                }
+              },
+              {
+                "id": "645e158d348f98bf",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "操作系统/微型计算机组成原理.md"
+                  }
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "horizontal",
+        "width": 132,
+        "collapsed": true
+      },
+      "active": "f3fc890bb456a2bc"
+    }
+  },
+  "active": "linux内核完全注释"
+}

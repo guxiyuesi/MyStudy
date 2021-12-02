@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="indi.guxiyuesi.HospitalManage.repository.adminRepository.AdminRepository">
+    <select id="selectAdminByAccountAndP"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.verification.Verification"
+            resultType="indi.guxiyuesi.HospitalManage.entity.admin.Admin">
+        select * from administrator where administratorAccount=#{account} and administratorPassword=#{password}
+    </select>
+
+
+</mapper>

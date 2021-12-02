@@ -1,0 +1,131 @@
+h2 {
+    color: red;
+    text-align: center;
+    background-color: aquamarine;
+    margin-bottom: 40px;
+    font-size: xx-large;
+}
+
+#value {
+    display: flex;
+}
+
+#select {
+    position: relative;
+    left: 200px;
+    width: 192px;
+    font-size: larger;
+    margin: 0px;
+    z-index: 999;
+}
+
+#selectUL {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    list-style-type: none;
+    
+}
+
+.selection {
+    width: 150px;
+    height: 60px;
+    margin-top: -2px;
+    margin-bottom: 0px;
+    border:solid 2px black;
+    text-align: center;
+    line-height: 60px;
+    display: block;
+    border-right: 2px;
+    border-right: none;
+    background-color: aliceblue;
+}
+
+#selectDoctor, #selectPatient, #selectDrug {
+    border-right:solid 2px black;
+}
+
+
+
+#content {   
+    width: 700px;
+    height: 700px;
+    position: relative;
+    top: 17.5px;
+    left: 198px;
+    border: solid 2px black;
+    z-index: 0;
+    
+}
+
+#adminInfo {
+}
+
+.forInline {
+    display: flex;
+    margin: 10px;
+
+
+}
+
+.adminLabel {
+    width: 230px;
+        /*后续要取消*/
+        display: none;
+}
+
+#adminInfo {
+    padding-left: 20px;
+    font-size: x-large;
+}
+
+.adminInput {
+    font-size: x-large;
+    height: 30px;
+    display: none;
+}
+
+.button {
+    margin-top: 30px;
+    position: relative;
+    left: 230px;
+}
+
+.submit {
+    height: 60px;
+    width: 160px;
+}
+
+#modify {
+    background-color: greenyellow;
+    /*后续要取消*/
+    display: none;
+}
+
+#submit {
+    background-color: red;
+    display: none;
+}
+
+#doctorValue {
+    display: none;
+}
+
+#doctorInfoDiv {
+    position: relative;
+    left: 50px;
+    top: -50px;
+}
+
+#doctorInfoTable {
+    table-layout : fixed;
+    width: 450px;
+    border : solid 2px black;
+    border-collapse: collapse;
+}
+
+
+
+#doctorInfoThead th{
+    border: solid 2px black;
+}

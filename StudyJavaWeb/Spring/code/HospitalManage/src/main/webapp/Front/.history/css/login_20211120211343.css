@@ -1,0 +1,35 @@
+body {
+    background-image: url(../image/hospitalImage2.jpg);
+    background-repeat: repeat;
+}
+
+.loginAll {
+    position: relative;
+    background-color: whitesmoke;
+    height: 400px;
+    width: 400px;
+    margin-left: 500px;
+    margin-top: 200px;
+    text-align: center;
+}
+
+.loginTitle {
+    display: inline-block;
+}
+
+.loginInput .loginInputValue{
+    border-radius: 30px;
+    height: 40px;
+    width: 270px;
+    margin: 10px;
+}
+
+#loginRadio {
+    text-align: left;
+    display: flex;
+}
+
+#loginRadio div {
+    margin: 0 auto;
+    zoom: 20;
+}
