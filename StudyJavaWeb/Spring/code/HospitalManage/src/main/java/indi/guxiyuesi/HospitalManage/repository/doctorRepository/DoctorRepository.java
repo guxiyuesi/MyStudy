@@ -9,4 +9,8 @@ public interface DoctorRepository {
     public Doctor selectDoctorByIdAndP(Verification verification);
 
     public List<Doctor> selectAllDoctor();
+
+    public Integer updateDoctorInfo(Doctor doctor);
+
+    public Integer insertDoctor(Doctor doctor);
 }
