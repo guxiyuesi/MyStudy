@@ -11,4 +11,106 @@
         select * from doctorinfo order by departmentId desc;
     </select>
 
+    <update id="updateDoctorInfo"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.Doctor">
+        update doctors set doctorName=#{doctorName},
+                            doctorGender=#{doctorGender},
+                            doctorPhoneNumber=#{doctorPhoneNumber},
+                            doctorAge=#{doctorAge},
+                            departmentId=#{departmentId},
+                            doctorDefaultAllNumber=#{doctorDefaultAllNumber},
+                            doctorPassword=#{doctorPassword},
+                            isDoctor=#{isDoctor}
+                        where doctorId = #{doctorId}
+    </update>
+
+    <insert id="insertDoctor"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.Doctor">
+        insert into doctors(doctorId, doctorName, doctorGender, doctorPhoneNumber, doctorAge, departmentId,
+                            doctorDefaultAllNumber, doctorPassword, isDoctor)
+                            values (#{doctorId}, #{doctorName}, #{doctorGender}, #{doctorPhoneNumber}, #{doctorAge}, #{departmentId},
+                            #{doctorDefaultAllNumber}, #{doctorPassword}, #{isDoctor})
+    </insert>
+
+    <select id="selectDoctorById"
+            parameterType="java.lang.String"
+            resultType="indi.guxiyuesi.HospitalManage.entity.doctor.Doctor">
+        select * from doctorinfo where doctorId = #{doctorId}
+    </select>
+
+    <select id="selectDoctorAndPatient"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctorAndPatient.IdPackage"
+            resultType="indi.guxiyuesi.HospitalManage.entity.doctorAndPatient.DoctorAndPatient">
+        select * from doctor_patient where doctorId=#{doctorId} and patientId=#{patientId}
+    </select>
+
+    <insert id="insertIntoMedicalRecord"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.MedicalRecord">
+        insert into medical_record(doctorId, patientId, illnessDescription)
+                values (#{doctorId}, #{patientId}, #{illnessDescription});
+    </insert>
+
+    <select id="selectDrugsByDepartment"
+            parameterType="java.lang.Integer"
+            resultType="indi.guxiyuesi.HospitalManage.entity.drug.Drug">
+        select drug.drugId drugId, drugName, drugNumber from drug, department_and_drug
+                where drug.drugId = department_and_drug.drugId and
+                      department_and_drug.departmentId = #{departmentId};
+    </select>
+
+    <select id="getMedicalRecordId"
+            resultType="java.lang.Long">
+        select max(medicalRecordId) from medical_record;
+    </select>
+
+    <insert id="insertIntoMedicalRecordAndDrug"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.MedicalRecordAndDrug">
+        insert into medical_record_and_drug(drugId, medicalRecordId, drugNum)
+            values (#{drugId}, #{medicalRecordId}, #{drugNum});
+    </insert>
+
+    <update id="updateDrugNum"
+            statementType="CALLABLE"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.MedicalRecordAndDrug">
+        CALL update_drug_num(#{drugId, mode=IN}, #{drugNum, mode=IN});
+    </update>
+
+    <update id="updateDoctor"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.Doctor">
+        update doctors
+            set doctorPhoneNumber = #{doctorPhoneNumber},
+                doctorAge = #{doctorAge}
+            where doctorId = #{doctorId}
+    </update>
+
+    <select id="getCurrentNumber"
+            parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        select doctorCurrentNumber from doctors where doctorId = #{doctorId}
+    </select>
+
+    <select id="getPatientId"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Long">
+        select patientId from doctor_and_patient where patientCurrentNum = #{doctorCurrentNumber};
+    </select>
+
+    <select id="getPatientByPatientId"
+            parameterType="java.lang.Long"
+            resultType="indi.guxiyuesi.HospitalManage.entity.patient.Patient">
+        select * from patients where patientId = #{patientId}
+    </select>
+
+    <select id="getTempDoctor"
+            parameterType="java.lang.String"
+            resultType="indi.guxiyuesi.HospitalManage.entity.doctor.TempDoctor">
+        select doctorId, doctorCurrentNumber, doctorCurrentAllNumber from doctors
+            where doctorId = #{doctorId};
+    </select>
+
+    <update id="updateCurrentNumber"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.doctor.TempDoctor">
+        update doctors set doctorCurrentNumber = #{doctorCurrentNumber}
+                        where doctorId = #{doctorId}
+    </update>
 </mapper>

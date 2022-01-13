@@ -9,10 +9,7 @@ import indi.guxiyuesi.HospitalManage.service.AddAccount;
 import indi.guxiyuesi.HospitalManage.service.GetInformation;
 import lombok.Data;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.print.Doc;
 import javax.servlet.http.HttpServletResponse;
@@ -48,17 +45,17 @@ public class EnterSystem {
             case "doctor":
                 doctor = getInformation.getDoctor(verification);
                 httpSession.setAttribute("doctor", doctor);
-                data = doctor == null ? "" : "";
+                data = doctor == null ? "" : doctor.getDoctorId();
                 break;
             case "patient":
                 patient = getInformation.getPatient(verification);
                 httpSession.setAttribute("patient", patient);
-                data = patient == null ? "":"";
+                data = patient == null ? "": String.valueOf(patient.getPatientId());
                 break;
             case "admin":
                 admin = getInformation.getAdmin(verification);
                 httpSession.setAttribute("admin", admin);
-                data = admin == null ? "":"adminPattern.jsp";
+                data = admin == null ? "":admin.getAdministratorId();
                 break;
         }
 

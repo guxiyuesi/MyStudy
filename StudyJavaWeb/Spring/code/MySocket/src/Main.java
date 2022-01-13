@@ -1,5 +1,3 @@
-package PACKAGE_NAME;
-
 /**
  * @author 叶意
  * @ClassName Main
@@ -7,4 +5,7 @@ package PACKAGE_NAME;
  * @createTime 2021年12月24日  22:24:00
  */
 public class Main {
+    public static void main(String[] args) {
+        System.out.println("hello world");
+    }
 }

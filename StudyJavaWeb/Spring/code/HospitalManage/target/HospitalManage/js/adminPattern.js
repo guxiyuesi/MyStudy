@@ -118,18 +118,22 @@ $selectPatientByIdNumber.click(function () {
       success : function (data) {
          if (data === "select false") {
             console.log(data);
-            $selectPatientByIdNumber.after("" +
-                "<div style='color: red'>未查询到信息</div>" +
-                "");
+            if ($("#patientMark").val() === undefined) {
+               $selectPatientByIdNumber.after("" +
+                   "<div id='patientMark' style='color: red'>未查询到信息</div>" +
+                   "");
+            }
          }
          else {
-            $patientInfoThead.css("display", "block");
-            let patient = JSON.parse(data);
-            $patientInfoThead.after("" +
-                "<tr class='patientTr'>" +
-                "<td>patientAccount</td>" +
-                "<td>" + patient.patientAccount + "</td>" +
-                "</tr>");
+            if (!($("#patientMark").val() === undefined)) {
+               $patientInfoThead.css("display", "block");
+               let patient = JSON.parse(data);
+               $patientInfoThead.after("" +
+                   "<tr class='patientTr'>" +
+                   "<td>patientAccount</td>" +
+                   "<td>" + patient.patientAccount + "</td>" +
+                   "</tr>");
+            }
          }
       }
 

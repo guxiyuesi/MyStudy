@@ -9,5 +9,7 @@
   "mx-bili-plugin",
   "media-extended",
   "pdf-to-markdown-plugin",
-  "obsidian-mind-map"
+  "obsidian-mind-map",
+  "obsidian-excalidraw-plugin",
+  "taskbone-ocr-plugin"
 ]

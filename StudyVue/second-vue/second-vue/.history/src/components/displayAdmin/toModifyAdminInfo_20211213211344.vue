@@ -1,0 +1,41 @@
+<template>
+    <div id="modifyAdminInfo">
+        <el-form  ref="form" :model="form" >
+            <el-form-item label="账号" label-width="80px" prop="account">
+                <el-input type="text" v-model="form.account" placeholder="请输入账号"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="login">登录</el-button>
+                <el-button @click="signUp">注册</el-button>
+            </el-form-item>
+        </el-form>   
+    </div>
+</template>
+
+<script>
+export default {
+    name:'login',
+    data() {
+        return {
+            form: {
+            account : '',
+            password : '',
+            character: ''
+            }
+        }
+    },
+    methods : {
+        login() {
+            alert("hello world");
+        },
+        signUp() {
+            //跳转到注册页面
+            this.$router.push('/signUp')
+        }
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

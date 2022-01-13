@@ -25,6 +25,12 @@
 
     <mvc:default-servlet-handler/>
 
+
+    <!-- 解决跨域问题 -->
+    <mvc:cors>
+        <mvc:mapping path="/**" />
+    </mvc:cors>
+
     <!-- 注册注解驱动 -->
     <mvc:annotation-driven >
         <!-- 配置消息转换器 -->

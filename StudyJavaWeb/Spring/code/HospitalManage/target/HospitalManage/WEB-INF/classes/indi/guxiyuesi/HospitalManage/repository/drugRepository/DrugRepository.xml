@@ -6,4 +6,33 @@
         select * from drug order by drugId desc;
     </select>
 
+    <select id="selectDepartmentsForDrug"
+            parameterType="java.lang.Long"
+            resultType="java.lang.String">
+        select department.departmentName departmentName from department_and_drug, department
+                where drugId = #{drugId} and department_and_drug.departmentId = department.departmentId;
+    </select>
+
+    <select id="selectAllDepartments"
+            resultType="indi.guxiyuesi.HospitalManage.entity.department.Department">
+        select departmentId, departmentName from department
+    </select>
+
+    <update id="updateDrug"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.drug.Drug">
+        update drug set drugName=#{drugName},
+                        drugDescription = #{drugDescription},
+                        drugNumber = #{drugNumber}
+                    where drugId = #{drugId}
+    </update>
+
+    <insert id="insertDrugAndDepartment"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.department.DrugAndDepartment">
+        insert into department_and_drug(departmentId, drugId) values (#{departmentId}, #{drugId})
+    </insert>
+
+    <delete id="deleteDrugAndDepartment"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.department.DrugAndDepartment">
+        delete from department_and_drug where departmentId = #{departmentId} and drugId = #{drugId}
+    </delete>
 </mapper>

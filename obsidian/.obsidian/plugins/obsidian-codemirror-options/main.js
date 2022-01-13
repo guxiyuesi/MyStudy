@@ -5,7 +5,12 @@ if you want to view the source visit the plugins github repository
 
 'use strict';
 
-var obsidian = require('obsidian');
+var require$$0 = require('obsidian');
+var electron = require('electron');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -21,22 +26,6 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    if (typeof b !== "function" && b !== null)
-        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -48,133 +37,217 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-function onRenderLine(cm, line, el) {
-    // setTimeout here since the renderLine event is emitted before the element is added to the DOM
-    // if we don't wait, we won't know who our parent is
-    var parentElement = el.parentElement;
-    if (!parentElement)
-        el.addEventListener("DOMNodeInserted", function (event) { return procLine(cm, line, el, event.relatedNode); }, { once: true });
-    // we can't do anything with a parentless element
-}
-function procLine(cm, line, el, parentEl) {
-    var _a, _b, _c;
-    // for some reason, codemirror or hmd skips putting elements in a wrapping div
-    // unsure what causes this to happen but try and account for it by falling back
-    // if the parent is the root codemirror-code element
-    if (parentEl.className === "CodeMirror-code")
-        parentEl = el;
-    // clear existing data keys
-    clearDataKeys(parentEl.dataset);
-    // split child classes
-    var childClasses = (_b = (_a = line.styleClasses) === null || _a === void 0 ? void 0 : _a.textClass) === null || _b === void 0 ? void 0 : _b.split(" ");
-    // line.styles is an array of multi-class strings
-    // we combine all of the styles into a single string and then dedupe it
-    var childElementClasses = (_c = line.styles) === null || _c === void 0 ? void 0 : _c.filter(function (style) { return typeof style === "string"; }).join(" ").split(" ").filter(function (v, i, a) { return a.indexOf(v) === i; });
-    // look for anything labeled as a header
-    // extract its full text value (minus the initial hash)
-    if (childClasses === null || childClasses === void 0 ? void 0 : childClasses.includes("HyperMD-header")) {
-        var _match = line.text.match(/^[#]+[\s]+(.+)/);
-        parentEl.dataset["heading"] = (_match === null || _match === void 0 ? void 0 : _match.length) > 0 ? line.text.match(/^[#]+[\s]+(.+)/)[1].trim() : "";
-    }
-    // check line for any hashtags and add them to a new data key
-    var tokens = cm.getLineTokens(line.lineNo());
-    var parsedTokens = parseLineTokens(tokens);
-    if (parsedTokens)
-        parentEl.dataset["hashtags"] = parseLineTokens(tokens);
-    // infer html tag type based on style classes
-    var htmlTag = childElementClasses ? lookupTag(childElementClasses) : null;
-    if (htmlTag) {
-        parentEl.dataset["tagName"] = htmlTag;
-    }
-}
-function clearDataKeys(keys) {
-    if (keys) {
-        Object.keys(keys).forEach(function (dataKey) {
-            delete keys[dataKey];
-        });
-    }
-}
-function parseLineTokens(tokens) {
-    tokens = tokens.filter(function (token) { var _a; return (_a = token.type) === null || _a === void 0 ? void 0 : _a.includes("hashtag-end"); });
-    if (tokens.length) {
-        var hashtags = tokens.map(function (token) { return token.string; }).join(" ");
-        if (hashtags.length) {
-            return tokens.map(function (token) { return token.string; }).join(" ");
-        }
-    }
-}
-function lookupTag(classes) {
-    var htmlTag;
-    for (var _i = 0, classes_1 = classes; _i < classes_1.length; _i++) {
-        var className = classes_1[_i];
-        switch (className) {
-            case "formatting-list-ol":
-                htmlTag = "ol";
-                break;
-            case "formatting-list-ul":
-                htmlTag = "ul";
-                break;
-            case "header-1":
-                htmlTag = "h1";
-                break;
-            case "header-2":
-                htmlTag = "h2";
-                break;
-            case "header-3":
-                htmlTag = "h3";
-                break;
-            case "header-4":
-                htmlTag = "h4";
-                break;
-            case "header-5":
-                htmlTag = "h5";
-                break;
-            case "header-6":
-                htmlTag = "h6";
-                break;
-            case "hmd-codeblock":
-                htmlTag = "code";
-                break;
-            case "hr":
-                htmlTag = "hr";
-                break;
-            case "hmd-frontmatter":
-                htmlTag = "frontmatter";
-                break;
-        }
-    }
-    return htmlTag;
+function createCommonjsModule(fn, basedir, module) {
+	return module = {
+		path: basedir,
+		exports: {},
+		require: function (path, base) {
+			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+		}
+	}, fn(module, module.exports), module.exports;
 }
 
-var DEFAULT_SETTINGS = {
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}
+
+var assertNever_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Helper function for exhaustive checks of discriminated unions.
+ * https://basarat.gitbooks.io/typescript/docs/types/discriminated-unions.html
+ *
+ * @example
+ *
+ *    type A = {type: 'a'};
+ *    type B = {type: 'b'};
+ *    type Union = A | B;
+ *
+ *    function doSomething(arg: Union) {
+ *      if (arg.type === 'a') {
+ *        return something;
+ *      }
+ *
+ *      if (arg.type === 'b') {
+ *        return somethingElse;
+ *      }
+ *
+ *      // TS will error if there are other types in the union
+ *      // Will throw an Error when called at runtime.
+ *      // Use `assertNever(arg, true)` instead to fail silently.
+ *      return assertNever(arg);
+ *    }
+ */
+function assertNever(value, noThrow) {
+    if (noThrow) {
+        return value;
+    }
+    throw new Error("Unhandled discriminated union member: " + JSON.stringify(value));
+}
+exports.assertNever = assertNever;
+exports.default = assertNever;
+});
+
+var assertNever = /*@__PURE__*/getDefaultExportFromCjs(assertNever_1);
+
+function unload_math_preview(cm) {
+    cm.setOption("hmdFoldMath", {
+        onPreview: null,
+        onPreviewEnd: null,
+    });
+}
+function init_math_preview(cm) {
+    if (require$$0.loadMathJax)
+        require$$0.loadMathJax();
+    if (!document.querySelector("#math-preview")) {
+        const mathPreviewEl = document.createElement("div");
+        mathPreviewEl.className = "float-win float-win-hidden";
+        mathPreviewEl.id = "math-preview";
+        const mathTitleEl = document.createElement("div");
+        mathTitleEl.addClass("float-win-title");
+        mathPreviewEl.appendChild(mathTitleEl);
+        mathTitleEl.outerHTML = `<div class="float-win-title">
+      <button class="float-win-close">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      Math Preview
+      </div>`;
+        const mathContentEl = document.createElement("div");
+        mathContentEl.addClass("float-win-content");
+        mathContentEl.id = "math-preview-content";
+        mathPreviewEl.appendChild(mathContentEl);
+        document.body.appendChild(mathPreviewEl);
+    }
+    let mathRenderer = null;
+    const win = new FloatWin("math-preview");
+    let supressed = false;
+    win.closeBtn.addEventListener("click", function () {
+        supressed = true; // for current TeX block
+    }, false);
+    function updatePreview(expr) {
+        if (supressed)
+            return;
+        if (!mathRenderer) {
+            // initialize renderer and preview window
+            mathRenderer = cm.hmd.FoldMath.createRenderer(document.getElementById("math-preview-content"), "display");
+            mathRenderer.onChanged = function () {
+                // finished rendering. show the window
+                if (!win.visible) {
+                    const cursorPos = cm.charCoords(cm.getCursor(), "window");
+                    win.moveTo(cursorPos.left, cursorPos.bottom);
+                }
+                win.show();
+            };
+        }
+        if (!mathRenderer.isReady())
+            return;
+        mathRenderer.startRender(expr);
+    }
+    function hidePreview() {
+        win.hide();
+        supressed = false;
+    }
+    cm.setOption("hmdFoldMath", {
+        onPreview: updatePreview,
+        onPreviewEnd: hidePreview,
+    });
+}
+function FloatWin(id) {
+    const win = document.getElementById(id);
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    /** @type {HTMLDivElement} */
+    const titlebar = win.querySelector(".float-win-title");
+    titlebar.addEventListener("selectstart", function () {
+        return false;
+    }, false);
+    /** @type {HTMLButtonElement} */
+    const closeBtn = win.querySelector(".float-win-close");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            self.hide();
+        }, false);
+    }
+    let boxX, boxY, mouseX, mouseY, offsetX, offsetY;
+    titlebar.addEventListener("mousedown", function (e) {
+        if (e.target === closeBtn)
+            return;
+        boxX = win.offsetLeft;
+        boxY = win.offsetTop;
+        mouseX = getMouseXY(e).x;
+        mouseY = getMouseXY(e).y;
+        offsetX = mouseX - boxX;
+        offsetY = mouseY - boxY;
+        document.addEventListener("mousemove", move, false);
+        document.addEventListener("mouseup", up, false);
+    }, false);
+    function move(e) {
+        let x = getMouseXY(e).x - offsetX;
+        let y = getMouseXY(e).y - offsetY;
+        const width = document.documentElement.clientWidth - titlebar.offsetWidth;
+        const height = document.documentElement.clientHeight - titlebar.offsetHeight;
+        x = Math.min(Math.max(0, x), width);
+        y = Math.min(Math.max(0, y), height);
+        win.style.left = x + "px";
+        win.style.top = y + "px";
+    }
+    function up(e) {
+        document.removeEventListener("mousemove", move, false);
+        document.removeEventListener("mouseup", up, false);
+    }
+    function getMouseXY(e) {
+        let x = 0, y = 0;
+        e = e || window.event;
+        if (e.pageX) {
+            x = e.pageX;
+            y = e.pageY;
+        }
+        else {
+            x = e.clientX + document.body.scrollLeft - document.body.clientLeft;
+            y = e.clientY + document.body.scrollTop - document.body.clientTop;
+        }
+        return {
+            x: x,
+            y: y,
+        };
+    }
+    this.el = win;
+    this.closeBtn = closeBtn;
+    this.visible = !/float-win-hidden/.test(win.className);
+}
+FloatWin.prototype.show = function (moveToCenter) {
+    if (this.visible)
+        return;
+    const el = this.el, 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    self = this;
+    this.visible = true;
+    el.className = this.el.className.replace(/\s*(float-win-hidden\s*)+/g, " ");
+    if (moveToCenter) {
+        setTimeout(function () {
+            self.moveTo((window.innerWidth - el.offsetWidth) / 2, (window.innerHeight - el.offsetHeight) / 2);
+        }, 0);
+    }
+};
+FloatWin.prototype.hide = function () {
+    if (!this.visible)
+        return;
+    this.visible = false;
+    this.el.className += " float-win-hidden";
+};
+FloatWin.prototype.moveTo = function (x, y) {
+    const s = this.el.style;
+    s.left = x + "px";
+    s.top = y + "px";
+};
+
+const DEFAULT_SETTINGS = {
     dynamicCursor: false,
     markSelection: false,
     activeLineOnSelect: false,
@@ -192,264 +265,403 @@ var DEFAULT_SETTINGS = {
     containerAttributes: false,
     syntaxHighlighting: false,
     autoAlignTables: false,
+    renderCode: false,
+    renderHTML: false,
+    renderChart: false,
+    renderAdmonition: false,
+    renderQuery: false,
+    renderDataview: false,
+    renderMath: false,
+    renderMathPreview: false,
+    renderBanner: false,
+    renderEmbeds: false,
+    renderEmoji: false,
+    renderTasks: false,
+    showBacklinks: false,
+    styleCheckBox: true,
+    allowedYamlKeys: "document-font-size",
     tokenList: "em|strong|strikethrough|code|linkText|task|internalLink|highlight",
 };
-var ObsidianCodeMirrorOptionsSettingsTab = /** @class */ (function (_super) {
-    __extends(ObsidianCodeMirrorOptionsSettingsTab, _super);
-    function ObsidianCodeMirrorOptionsSettingsTab(app, plugin) {
-        var _this = _super.call(this, app, plugin) || this;
-        _this.plugin = plugin;
-        return _this;
+class ObsidianCodeMirrorOptionsSettingsTab extends require$$0.PluginSettingTab {
+    constructor(app, plugin) {
+        super(app, plugin);
+        this.plugin = plugin;
     }
-    ObsidianCodeMirrorOptionsSettingsTab.prototype.display = function () {
-        var _this = this;
-        var containerEl = this.containerEl;
+    display() {
+        const { containerEl } = this;
         containerEl.empty();
         containerEl.addClass("codemirror-options-settings");
-        containerEl.createEl("h3", {
-            text: "Markdown Parsing",
-        });
-        new obsidian.Setting(containerEl)
-            .setName("⚠️ Hide Markdown Tokens")
-            .setDesc("Emulate WYSIWYG while editing by hiding markdown tokens. Markdown tokens will automatically hide once the cursor leaves the element.\n         This mode will apply the class .hmd-inactive-line to all inactive lines and the class .hmd-hidden-token to all hidden tokens.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.editModeHideTokens).onChange(function (value) {
-                _this.plugin.settings.editModeHideTokens = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("hmdHideToken", _this.plugin.settings.editModeHideTokens ? _this.plugin.settings.tokenList : false);
-                _this.plugin.applyBodyClasses();
+        let tokenSettings;
+        if (!this.app.vault.getConfig("legacyEditor")) {
+            containerEl.createEl("h3", {
+                text: "⚠️ Notice: Most of this plugin does not function when Live Preview mode is enabled.",
+            });
+        }
+        if (this.app.vault.getConfig("legacyEditor")) {
+            containerEl.createEl("h3", {
+                text: "Markdown Parsing",
+            });
+            new require$$0.Setting(containerEl)
+                .setName("⚠️ Hide Markdown Tokens")
+                .setDesc(`Emulate WYSIWYG while editing by hiding markdown tokens. Markdown tokens will automatically hide once the cursor leaves the element.
+         This mode will apply the class .hmd-inactive-line to all inactive lines and the class .hmd-hidden-token to all hidden tokens.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.editModeHideTokens).onChange(value => {
+                this.plugin.settings.editModeHideTokens = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("hmdHideToken", this.plugin.settings.editModeHideTokens ? this.plugin.settings.tokenList : false);
+                this.plugin.applyBodyClasses();
                 // hide the token list if the hide tokens setting is disabled
-                _this.plugin.settings.editModeHideTokens
+                this.plugin.settings.editModeHideTokens
                     ? tokenSettings.settingEl.removeClass("setting-disabled")
                     : tokenSettings.settingEl.addClass("setting-disabled");
-            });
-        });
-        var tokenSettings = new obsidian.Setting(this.containerEl)
-            .setName("⚠️ Token List")
-            .setDesc("These markdown token types will be hidden. The default value will hide all currently supported tokens.\n         Values must be pipe delimted with no spaces. Available options are: em|strong|strikethrough|code|linkText|task|internalLink|highlight")
-            .setClass("token-list-setting")
-            .addText(function (textfield) {
-            textfield.setPlaceholder(String("em|strong|strikethrough|code|linkText|task|internalLink|highlight"));
-            textfield.inputEl.type = "text";
-            textfield.setValue(String(_this.plugin.settings.tokenList));
-            textfield.onChange(function (value) { return __awaiter(_this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
+            }));
+            tokenSettings = new require$$0.Setting(this.containerEl)
+                .setName("⚠️ Token List")
+                .setDesc(`These markdown token types will be hidden. The default value will hide all currently supported tokens.
+         Values must be pipe delimted with no spaces. Available options are: em|strong|strikethrough|code|linkText|task|internalLink|highlight`)
+                .setClass("token-list-setting")
+                .addText(textfield => {
+                textfield.setPlaceholder(String("em|strong|strikethrough|code|linkText|task|internalLink|highlight"));
+                textfield.inputEl.type = "text";
+                textfield.setValue(String(this.plugin.settings.tokenList));
+                textfield.onChange((value) => __awaiter(this, void 0, void 0, function* () {
                     this.plugin.settings.tokenList = value;
                     this.plugin.saveData(this.plugin.settings);
                     this.plugin.updateCodeMirrorOption("hmdHideToken", this.plugin.settings.editModeHideTokens ? this.plugin.settings.tokenList : false, true);
-                    return [2 /*return*/];
+                }));
+            });
+            new require$$0.Setting(containerEl)
+                .setName("⚠️ Enable OpenMD Mode")
+                .setDesc(`Completely replace the HyperMD CodeMirror mode with a modified version of HyperMD that aims to
+                replicate the default Obsidian edit mode parser while adding additional functionality such as
+                improved internal link parsing.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.enableOpenMD).onChange(value => {
+                this.plugin.settings.enableOpenMD = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("mode", this.plugin.settings.enableOpenMD ? "openmd" : "hypermd");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("⚠️ Collapse External Links")
+                .setDesc(`This will collapse external links in edit mode so that the URL is hidden and only the link text is shown. 
+                The full URL will display once you click into the link text.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.foldLinks).onChange(value => {
+                this.plugin.settings.foldLinks = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.applyBodyClasses();
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("⚠️ Render Images Inline")
+                .setDesc(`This will render images in edit mode inline. Clicking on the image will collapse the image down to its source view.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.foldImages).onChange(value => {
+                this.plugin.settings.foldImages = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.applyBodyClasses();
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Edit Mode Click Handler")
+                .setDesc(`Allow mouse clicks to toggle checkboxes in edit mode.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.editModeClickHandler).onChange(value => {
+                this.plugin.settings.editModeClickHandler = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("hmdClick", this.plugin.settings.editModeClickHandler);
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Style Checkboxes")
+                .setDesc(`Disable this if you want to do your own styling of edit mode checkboxes. This setting does nothing if Hide Markdown Tokens is disabled`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.styleCheckBox).onChange(value => {
+                this.plugin.settings.styleCheckBox = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.applyBodyClasses();
+            }));
+            containerEl.createEl("h3", {
+                text: "Edit Mode Code Rendering",
+            });
+            new require$$0.Setting(containerEl)
+                .setName("⚠️⚠️ Render Embeds")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderEmbeds).onChange(value => {
+                this.plugin.settings.renderEmbeds = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render HTML")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderHTML).onChange(value => {
+                this.plugin.settings.renderHTML = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Math")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderMath).onChange(value => {
+                this.plugin.settings.renderMath = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Math Preview")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderMathPreview).onChange(value => {
+                this.plugin.settings.renderMathPreview = value;
+                this.plugin.saveData(this.plugin.settings);
+                if (this.plugin.settings.renderMathPreview) {
+                    this.app.workspace.iterateCodeMirrors(cm => {
+                        init_math_preview(cm);
+                    });
+                }
+                else {
+                    const previewEl = document.querySelector("#math-preview");
+                    if (previewEl) {
+                        document.querySelector("#math-preview").detach();
+                    }
+                    this.app.workspace.iterateCodeMirrors(cm => {
+                        unload_math_preview(cm);
+                    });
+                }
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Emoji/Icon Shortcodes")
+                .setDesc(createFragment(el => {
+                el.appendText(`Render emoji/icon `);
+                el.createEl("code", { text: ":shortcodes:" });
+                el.appendText(` inline.`);
+                el.createEl("br");
+                el.createEl("a", {
+                    href: "https://github.com/aidenlx/obsidian-icon-shortcodes",
+                    text: "Icon Shortcodes v0.4.1+",
                 });
-            }); });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("⚠️ Enable OpenMD Mode")
-            .setDesc("Completely replace the HyperMD CodeMirror mode with a modified version of HyperMD that aims to\n                replicate the default Obsidian edit mode parser while adding additional functionality such as\n                improved internal link parsing.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.enableOpenMD).onChange(function (value) {
-                _this.plugin.settings.enableOpenMD = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("mode", _this.plugin.settings.enableOpenMD ? "openmd" : "hypermd");
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("⚠️ Collapse External Links")
-            .setDesc("This will collapse external links in edit mode so that the URL is hidden and only the link text is shown. \n                The full URL will display once you click into the link text.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.foldLinks).onChange(function (value) {
-                _this.plugin.settings.foldLinks = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("hmdFold", {
-                    image: _this.plugin.settings.foldImages,
-                    link: _this.plugin.settings.foldLinks,
+                el.appendText(" Required. ");
+            }))
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderEmoji).onChange(value => {
+                this.plugin.settings.renderEmoji = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.applyBodyClasses();
+                this.app.workspace.iterateCodeMirrors(cm => {
+                    cm.refresh();
                 });
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("⚠️ Render Images Inline")
-            .setDesc("This will render images in edit mode inline. Clicking on the image will collapse the image down to its source view.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.foldImages).onChange(function (value) {
-                _this.plugin.settings.foldImages = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.applyBodyClasses();
-                _this.plugin.updateCodeMirrorOption("hmdFold", {
-                    image: _this.plugin.settings.foldImages,
-                    link: _this.plugin.settings.foldLinks,
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Code Blocks")
+                .setDesc(`If this is disabled, none of the options below will do anything`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderCode).onChange(value => {
+                this.plugin.settings.renderCode = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFold");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Admonitions")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderAdmonition).onChange(value => {
+                this.plugin.settings.renderAdmonition = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFoldCode");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Charts")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderChart).onChange(value => {
+                this.plugin.settings.renderChart = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFoldCode");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Embedded Search")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderQuery).onChange(value => {
+                this.plugin.settings.renderQuery = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFoldCode");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Dataview")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderDataview).onChange(value => {
+                this.plugin.settings.renderDataview = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFoldCode");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Tasks")
+                .setDesc(``)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderTasks).onChange(value => {
+                this.plugin.settings.renderTasks = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateHmdOptions("hmdFoldCode");
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Render Banners")
+                .setDesc(`This settings requires that the "Container Attributes" setting is enabled`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.renderBanner).onChange(value => {
+                this.plugin.settings.renderBanner = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.applyBodyClasses();
+                this.app.workspace.iterateCodeMirrors(cm => {
+                    cm.refresh();
                 });
+            }));
+            containerEl.createEl("h3", {
+                text: "Visual Styling",
             });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Edit Mode Click Handler")
-            .setDesc("Allow mouse clicks to toggle checkboxes in edit mode.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.editModeClickHandler).onChange(function (value) {
-                _this.plugin.settings.editModeClickHandler = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("hmdClick", _this.plugin.settings.editModeClickHandler);
+            new require$$0.Setting(containerEl)
+                .setName("Show Backlinks in Editor")
+                .setDesc(`Append a backlinks component to the footer of edit mode documents`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.showBacklinks).onChange(value => {
+                this.plugin.settings.showBacklinks = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.settings.showBacklinks
+                    ? this.plugin.addBacklinksImmediately()
+                    : this.plugin.removeBacklinksImmediately();
+                // this.plugin.updateCodeMirrorHandlers("renderLine", this.plugin.onRenderLineBound, value, true);
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Container Attributes")
+                .setDesc(`Apply data attributes to the CodeMirror line div elements that describe the contained child elements. Think of
+      this like Contextual Typography for Edit Mode.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.containerAttributes).onChange(value => {
+                this.plugin.settings.containerAttributes = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorHandlers("renderLine", this.plugin.onRenderLineBound, value, true);
+            }));
+            new require$$0.Setting(this.containerEl)
+                .setName("⚠️ Allowed Front Matter Keys")
+                .setDesc(`A comma seperated list of front matter keys to turn into CSS variables and data attributes. This setting requires that the Container Attributes setting is enabled.`)
+                .setClass("frontmatter-key-list-setting")
+                .addText(textfield => {
+                textfield.setPlaceholder(String(""));
+                textfield.inputEl.type = "text";
+                textfield.setValue(String(this.plugin.settings.allowedYamlKeys));
+                textfield.onChange((value) => __awaiter(this, void 0, void 0, function* () {
+                    this.plugin.settings.allowedYamlKeys = value;
+                    this.plugin.saveData(this.plugin.settings);
+                }));
             });
-        });
-        containerEl.createEl("h3", {
-            text: "Visual Styling",
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Container Attributes")
-            .setDesc("Apply data attributes to the CodeMirror line div elements that describe the contained child elements. Think of\n      this like Contextual Typography for Edit Mode.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.containerAttributes).onChange(function (value) {
-                _this.plugin.settings.containerAttributes = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorHandlers("renderLine", onRenderLine, value, true);
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Auto Align Tables")
-            .setDesc("Automatically align markdown tables as they are being built.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.autoAlignTables).onChange(function (value) {
-                _this.plugin.settings.autoAlignTables = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("hmdTableAlign", _this.plugin.settings.autoAlignTables);
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Dynamic cursor size")
-            .setDesc("When enabled, the cursor height will be determined by the max height of the entire line. \n         When disabled, the cursor's height is based on the height of the adjacent reference character.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.dynamicCursor).onChange(function (value) {
-                _this.plugin.settings.dynamicCursor = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("singleCursorHeightPerLine", !_this.plugin.settings.dynamicCursor);
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Style active selection")
-            .setDesc("When enabled, selected text will be marked with the CSS class .CodeMirror-selectedtext. \n         Useful to force the styling of selected text when ::selection is not sufficient.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.markSelection).onChange(function (value) {
-                _this.plugin.settings.markSelection = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("styleSelectedText", _this.plugin.settings.markSelection);
-                _this.plugin.applyBodyClasses();
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Retain active line on selection")
-            .setDesc("When enabled, text selection will not remove the .active-line class on the current line. \n         When disabled text selection on the active line will remove the .active-line class.")
-            .addToggle(function (toggle) {
-            return toggle.setValue(_this.plugin.settings.activeLineOnSelect).onChange(function (value) {
-                _this.plugin.settings.activeLineOnSelect = value;
-                _this.plugin.saveData(_this.plugin.settings);
-                _this.plugin.updateCodeMirrorOption("styleActiveLine", _this.plugin.settings.activeLineOnSelect ? { nonEmpty: true } : true);
-            });
-        });
-        new obsidian.Setting(containerEl)
-            .setName("Cursor Blink Rate")
-            .setDesc("Value is in milliseconds. Default is 530. Set to 0 to disable blinking.")
-            .addText(function (textfield) {
-            textfield.setPlaceholder(String(530));
-            textfield.inputEl.type = "number";
-            textfield.setValue(String(_this.plugin.settings.cursorBlinkRate));
-            textfield.onChange(function (value) { return __awaiter(_this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
+            new require$$0.Setting(containerEl)
+                .setName("Auto Align Tables")
+                .setDesc(`Automatically align markdown tables as they are being built. Note: This setting currently requires that OpenMD Mode be enabled.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.autoAlignTables).onChange(value => {
+                this.plugin.settings.autoAlignTables = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("hmdTableAlign", this.plugin.settings.autoAlignTables);
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Dynamic cursor size")
+                .setDesc(`When enabled, the cursor height will be determined by the max height of the entire line. 
+         When disabled, the cursor's height is based on the height of the adjacent reference character.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.dynamicCursor).onChange(value => {
+                this.plugin.settings.dynamicCursor = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("singleCursorHeightPerLine", !this.plugin.settings.dynamicCursor);
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Style active selection")
+                .setDesc(`When enabled, selected text will be marked with the CSS class .CodeMirror-selectedtext. 
+         Useful to force the styling of selected text when ::selection is not sufficient.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.markSelection).onChange(value => {
+                this.plugin.settings.markSelection = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("styleSelectedText", this.plugin.settings.markSelection);
+                this.plugin.applyBodyClasses();
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Retain active line on selection")
+                .setDesc(`When enabled, text selection will not remove the .active-line class on the current line. 
+         When disabled text selection on the active line will remove the .active-line class.`)
+                .addToggle(toggle => toggle.setValue(this.plugin.settings.activeLineOnSelect).onChange(value => {
+                this.plugin.settings.activeLineOnSelect = value;
+                this.plugin.saveData(this.plugin.settings);
+                this.plugin.updateCodeMirrorOption("styleActiveLine", this.plugin.settings.activeLineOnSelect ? { nonEmpty: true } : true);
+            }));
+            new require$$0.Setting(containerEl)
+                .setName("Cursor Blink Rate")
+                .setDesc(`Value is in milliseconds. Default is 530. Set to 0 to disable blinking.`)
+                .addText(textfield => {
+                textfield.setPlaceholder(String(530));
+                textfield.inputEl.type = "number";
+                textfield.setValue(String(this.plugin.settings.cursorBlinkRate));
+                textfield.onChange((value) => __awaiter(this, void 0, void 0, function* () {
                     this.plugin.settings.cursorBlinkRate = Number(value);
                     this.plugin.saveData(this.plugin.settings);
                     this.plugin.updateCodeMirrorOption("cursorBlinkRate", this.plugin.settings.cursorBlinkRate);
-                    return [2 /*return*/];
-                });
-            }); });
-        });
+                }));
+            });
+        }
         containerEl.createEl("h3", {
             text: "Syntax Highlighting",
         });
-        var lineNums, copyButton, copyButtonPre;
-        if (
-        //@ts-ignore
-        this.app.plugins.plugins["cm-editor-syntax-highlight-obsidian"]) {
-            new obsidian.Setting(containerEl)
-                .setName("Enable Edit Mode Syntax Highlighting Themes")
-                .setDesc("Apply syntax highlighting themes to code blocks in edit mode. The default theme is Material Pale Night\n                but additional themes are available via the Style Settings plugin")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.syntaxHighlighting).onChange(function (value) {
-                    _this.plugin.settings.syntaxHighlighting = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                });
-            });
-            new obsidian.Setting(containerEl)
-                .setName("Enable Preview Mode Syntax Highlighting Themes")
-                .setDesc("Apply syntax highlighting themes to code blocks in preview mode. The default theme is Material Pale Night\n        but additional themes are available via the Style Settings plugin")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.enablePrismJSStyling).onChange(function (value) {
-                    _this.plugin.settings.enablePrismJSStyling = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                });
-            });
-            new obsidian.Setting(containerEl)
-                .setName("Use CodeMirror for syntax highlighting in preview mode")
-                .setDesc("This setting creates consistent highlighting between edit and preview by using CodeMirror to highlight code in both modes.")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.enableCMinPreview).onChange(function (value) {
-                    _this.plugin.settings.enableCMinPreview = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                    _this.plugin.settings.enableCMinPreview
-                        ? (lineNums.settingEl.removeClass("setting-disabled"),
-                            copyButton.settingEl.removeClass("setting-disabled"),
-                            copyButtonPre.settingEl.removeClass("setting-disabled"))
-                        : (lineNums.settingEl.addClass("setting-disabled"),
-                            copyButton.settingEl.addClass("setting-disabled"),
-                            copyButtonPre.settingEl.addClass("setting-disabled"));
-                });
-            });
-            lineNums = new obsidian.Setting(containerEl)
-                .setName("⚠️ Show line numbers for code blocks in preview mode")
-                .setDesc("This setting will add line numbers to code blocks in preview mode.")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.showLineNums).onChange(function (value) {
-                    _this.plugin.settings.showLineNums = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                });
-            });
-            copyButton = new obsidian.Setting(containerEl)
-                .setName("Enable copy button to code blocks in preview mode")
-                .setDesc("This setting will add a copy button to the bottom left corner of code blocks in preview mode. The button will show up on code block hover.")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.copyButton).onChange(function (value) {
-                    _this.plugin.settings.copyButton = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                });
-            });
-            copyButtonPre = new obsidian.Setting(containerEl)
-                .setName("⚠️ Enable copy button to all PRE blocks in preview mode")
-                .setDesc("This setting will add a copy button to any PRE element. This could negatively impact certain plugins that render PRE blocks.")
-                .addToggle(function (toggle) {
-                return toggle.setValue(_this.plugin.settings.copyButtonOnPRE).onChange(function (value) {
-                    _this.plugin.settings.copyButtonOnPRE = value;
-                    _this.plugin.saveData(_this.plugin.settings);
-                    _this.plugin.applyBodyClasses(true);
-                });
-            });
-        }
-        else {
-            new obsidian.Setting(containerEl)
-                .setName("Use CodeMirror for syntax highlighting in preview mode")
-                .setDesc('⚠️ Install the plugin "Editor Syntax Highlight" in order to use this feature')
-                .setClass("info");
-        }
+        let lineNums, copyButton, copyButtonPre;
+        new require$$0.Setting(containerEl)
+            .setName("Enable Edit Mode Syntax Highlighting Themes")
+            .setDesc(`Apply syntax highlighting themes to code blocks in edit mode. The default theme is Material Pale Night
+                but additional themes are available via the Style Settings plugin`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.syntaxHighlighting).onChange(value => {
+            this.plugin.settings.syntaxHighlighting = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+        }));
+        new require$$0.Setting(containerEl)
+            .setName("Enable Preview Mode Syntax Highlighting Themes")
+            .setDesc(`Apply syntax highlighting themes to code blocks in preview mode. The default theme is Material Pale Night
+        but additional themes are available via the Style Settings plugin`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.enablePrismJSStyling).onChange(value => {
+            this.plugin.settings.enablePrismJSStyling = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+        }));
+        new require$$0.Setting(containerEl)
+            .setName("Use CodeMirror for syntax highlighting in preview mode")
+            .setDesc(`This setting creates consistent highlighting between edit and preview by using CodeMirror to highlight code in both modes.`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.enableCMinPreview).onChange(value => {
+            this.plugin.settings.enableCMinPreview = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+            this.plugin.settings.enableCMinPreview
+                ? (lineNums.settingEl.removeClass("setting-disabled"),
+                    copyButton.settingEl.removeClass("setting-disabled"),
+                    copyButtonPre.settingEl.removeClass("setting-disabled"))
+                : (lineNums.settingEl.addClass("setting-disabled"),
+                    copyButton.settingEl.addClass("setting-disabled"),
+                    copyButtonPre.settingEl.addClass("setting-disabled"));
+        }));
+        lineNums = new require$$0.Setting(containerEl)
+            .setName("⚠️ Show line numbers for code blocks in preview mode")
+            .setDesc(`This setting will add line numbers to code blocks in preview mode.`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.showLineNums).onChange(value => {
+            this.plugin.settings.showLineNums = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+        }));
+        copyButton = new require$$0.Setting(containerEl)
+            .setName("Enable copy button to code blocks in preview mode")
+            .setDesc(`This setting will add a copy button to the bottom left corner of code blocks in preview mode. The button will show up on code block hover.`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.copyButton).onChange(value => {
+            this.plugin.settings.copyButton = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+        }));
+        copyButtonPre = new require$$0.Setting(containerEl)
+            .setName("⚠️ Enable copy button to all PRE blocks in preview mode")
+            .setDesc(`This setting will add a copy button to any PRE element. This could negatively impact certain plugins that render PRE blocks.`)
+            .addToggle(toggle => toggle.setValue(this.plugin.settings.copyButtonOnPRE).onChange(value => {
+            this.plugin.settings.copyButtonOnPRE = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.applyBodyClasses(true);
+        }));
         containerEl.createEl("h3", {
             text: "Syntax Highlighting Theme",
         });
-        new obsidian.Setting(containerEl)
+        new require$$0.Setting(containerEl)
             .setName("Refer to the Style Settings plugin")
-            .setDesc("To customize the syntax highlighting theme, \n    install the Style Settings plugin and expand the \"CodeMirror Options\" section")
+            .setDesc(`To customize the syntax highlighting theme, 
+    install the Style Settings plugin and expand the "CodeMirror Options" section`)
             .setClass("info");
         // update dynamic setting visibility
         this.plugin.settings.editModeHideTokens
-            ? tokenSettings.settingEl.removeClass("setting-disabled")
-            : tokenSettings.settingEl.addClass("setting-disabled");
+            ? tokenSettings === null || tokenSettings === void 0 ? void 0 : tokenSettings.settingEl.removeClass("setting-disabled")
+            : tokenSettings === null || tokenSettings === void 0 ? void 0 : tokenSettings.settingEl.addClass("setting-disabled");
         this.plugin.settings.enableCMinPreview
             ? (lineNums === null || lineNums === void 0 ? void 0 : lineNums.settingEl.removeClass("setting-disabled"),
                 copyButton === null || copyButton === void 0 ? void 0 : copyButton.settingEl.removeClass("setting-disabled"),
@@ -457,9 +669,8 @@ var ObsidianCodeMirrorOptionsSettingsTab = /** @class */ (function (_super) {
             : (lineNums === null || lineNums === void 0 ? void 0 : lineNums.settingEl.addClass("setting-disabled"),
                 copyButton === null || copyButton === void 0 ? void 0 : copyButton.settingEl.addClass("setting-disabled"),
                 copyButtonPre === null || copyButtonPre === void 0 ? void 0 : copyButtonPre.settingEl.addClass("setting-disabled"));
-    };
-    return ObsidianCodeMirrorOptionsSettingsTab;
-}(obsidian.PluginSettingTab));
+    }
+}
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
@@ -469,7 +680,8 @@ function leftFillNum(num, targetLength) {
 }
 
 CodeMirror.runMode = function (string, modespec, callback, options) {
-  var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
+  var modeRef = CodeMirror.findModeByName(modespec);
+  var mode = CodeMirror.getMode(CodeMirror.defaults, modeRef?.mime);
   var lineNumber = 1;
   if (callback.nodeType == 1) {
     var tabSize = (options && options.tabSize) || CodeMirror.defaults.tabSize;
@@ -766,22 +978,6 @@ CodeMirror.colorize = (function () {
     updateActiveLines(cm, sel.ranges);
   }
 });
-
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}
 
 createCommonjsModule(function (module) {
 /*!
@@ -1977,7 +2173,6 @@ createCommonjsModule(function (module) {
 });
 });
 
-createCommonjsModule(function (module) {
 // HyperMD, copyright (c) by laobubu
 // Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
 //
@@ -1985,42 +2180,6 @@ createCommonjsModule(function (module) {
 //
 // With custom ClickHandler supported
 //
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
 
 (function (mod) {
   //[HyperMD] UMD patched!
@@ -2033,7 +2192,6 @@ var __importStar =
     exports.defaultOption =
     exports.defaultClickHandler =
       void 0;
-  CodeMirror = __importStar(CodeMirror);
   //#endregion
   /********************************************************************************** */
   //#region defaultClickHandler
@@ -2195,9 +2353,7 @@ var __importStar =
   /** ADDON GETTER (Singleton Pattern): a editor can have only one Click instance */
   exports.getAddon = core_1.Addon.Getter("Click", Click, exports.defaultOption /** if has options */);
 });
-});
 
-createCommonjsModule(function (module) {
 // HyperMD, copyright (c) by laobubu
 // Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
 //
@@ -2205,42 +2361,6 @@ createCommonjsModule(function (module) {
 //
 // Only works with `hypermd` mode, require special CSS rules
 //
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
 
 (function (mod) {
   //[HyperMD] UMD patched!
@@ -2248,7 +2368,6 @@ var __importStar =
 })(function (require, exports, CodeMirror, core_1) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getAddon = exports.HideToken = exports.suggestedOption = exports.defaultOption = void 0;
-  CodeMirror = __importStar(CodeMirror);
   //#region Internal Function...
   /** check if has the class and remove it */
   function rmClass(el, className) {
@@ -2313,7 +2432,7 @@ var __importStar =
         var css;
         if (_this.tokenTypes.indexOf("task") === -1) css = "";
         else
-          css = `.hide-tokens .cm-s-obsidian span.cm-formatting-task {
+          css = `.hide-tokens.style-check-box .cm-s-obsidian span.cm-formatting-task {
           white-space: pre;
           display: inline-block;
           height: 1em;
@@ -2328,10 +2447,10 @@ var __importStar =
           background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAwCAMAAAA8VkqRAAAAclBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACa4vOeAAAAJXRSTlMADcjpDswcLZOzsvOYBvWdbtvTX0D69+ORa1dRJCDtuaF7ZDkoQyuUXgAAAMhJREFUOMvt0reywjAUhOFjKxmcrgMZboL//V8Rm6GwkNUx0LClvhkVZ1fEZoqHqMwO7wuUSb0YxcJKxtLpxIt2SzJRykkQp5RgdAjaIKRJCEn6gWdA9OzRoqLVRscQnc9bdtXX/eyurOF7N3erLVDPwCGHxoVwamH1LwGUBfBbhrCvoLlMitL9DY8trLtJg7qoCj18VAN1OYE/YJBuDe1RJtBVo5wbqPb+GL5yWG1GLX0YZYw5iQ93yQ/yAHfZzu5qt/mxr97VFS15JGSVM0C6AAAAAElFTkSuQmCC");
           background-size: 1em;
         }
-        .theme-dark.hide-tokens .cm-s-obsidian span.cm-formatting-task {
+        .theme-dark.hide-tokens.style-check-box .cm-s-obsidian span.cm-formatting-task {
           filter: invert(1);
         }
-        .hide-tokens .cm-s-obsidian span.cm-formatting-task.cm-property {
+        .hide-tokens.style-check-box .cm-s-obsidian span.cm-formatting-task.cm-property {
           background-position-y: -1em;
         }`;
         _this.styleEl.textContent = _this._lastCSS = css;
@@ -2414,6 +2533,12 @@ var __importStar =
               var domParent = domNode.parentElement;
               if (shallHideTokens ? addClass(domParent, hideClassName) : rmClass(domParent, hideClassName)) {
                 changed = true;
+              }
+              if (domParent && domParent.classList && domParent.classList.contains("cm-formatting-task")) {
+                if (!domParent.dataset.hasOwnProperty("task")) {
+                  domParent.dataset.task = domNode.textContent.substring(1, 2);
+                  changed = true;
+                }
               }
               if (
                 domParent.nextElementSibling &&
@@ -2559,7 +2684,6 @@ var __importStar =
   /** ADDON GETTER (Singleton Pattern): a editor can have only one HideToken instance */
   exports.getAddon = core_1.Addon.Getter("HideToken", HideToken, exports.defaultOption /** if has options */);
 });
-});
 
 createCommonjsModule(function (module) {
 // CodeMirror, copyright (c) by laobubu
@@ -2581,42 +2705,6 @@ var __assign =
       };
     return __assign.apply(this, arguments);
   };
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
 
 (function (mod) {
   //[HyperMD] UMD patched!
@@ -2624,7 +2712,6 @@ var __importStar =
 })(function (require, exports, CodeMirror) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
-  CodeMirror = __importStar(CodeMirror);
   /**
    * Markdown Extension Tokens
    *
@@ -2887,12 +2974,13 @@ var __importStar =
           if (modeCfg.math && inMarkdownInline && (tmp = stream.match(/^\${1,2}/, false))) {
             var endTag_1 = tmp[0];
             var mathLevel = endTag_1.length;
-            if (mathLevel === 2 || stream.string.slice(stream.pos).match(/[^\\]\$/)) {
+            if (mathLevel === 2 || stream.string.slice(stream.pos).match(/[^\\\s-]\$(?![0-9])/)) {
               // $$ may span lines, $ must be paired
               var texMode = CodeMirror.getMode(cmCfg, {
                 name: "stex",
               });
               var noTexMode = texMode["name"] !== "stex";
+              var block = mathLevel > 1 ? "math-block" : "";
               ans += enterMode(stream, state, texMode, {
                 style: "math",
                 skipFirstToken: noTexMode,
@@ -2900,11 +2988,11 @@ var __importStar =
                   return createDummyMode(endTag_1);
                 },
                 exitChecker: createSimpleInnerModeExitChecker(endTag_1, {
-                  style: "formatting formatting-math formatting-math-end math-" + mathLevel,
+                  style: `formatting formatting-math formatting-math-end ${block} math-` + mathLevel,
                 }),
               });
               if (noTexMode) stream.pos += tmp[0].length;
-              ans += " formatting formatting-math formatting-math-begin math-" + mathLevel;
+              ans += ` formatting formatting-math formatting-math-begin ${block} math-` + mathLevel;
               return ans;
             }
           }
@@ -3222,7 +3310,7 @@ var __importStar =
                     state.hmdImage = 0;
                     ans += " " + "internal-link-url";
                   } else {
-                  ans += " " + "internal-link-name";
+                    ans += " " + "internal-link-name";
                   }
                 } else ;
                 current = stream.current();
@@ -3309,7 +3397,7 @@ var __importStar =
                   // successfully made one
                   state.hmdTable = tableType;
                   state.hmdTableColumns = rowStyles;
-                  state.hmdTableID = "T" + stream.lineOracle.line;
+                  state.hmdTableID = "T" + stream.lineOracle?.line;
                   state.hmdTableRow = state.hmdTableCol = 0;
                 }
               }
@@ -3475,73 +3563,29 @@ var __importStar =
 });
 });
 
-createCommonjsModule(function (module) {
 // HyperMD, copyright (c) by laobubu
-// Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
-//
-// DESCRIPTION: Turn Markdown markers into real images, link icons etc. Support custom folders.
-//
-// You may set `hmdFold.customFolders` option to fold more, where `customFolders` is Array<FolderFunc>
-//
-var __extends =
-  (commonjsGlobal && commonjsGlobal.__extends) ||
-  (function () {
-    var extendStatics = function (d, b) {
-      extendStatics =
-        Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array &&
-          function (d, b) {
-            d.__proto__ = b;
-          }) ||
+
+var ___extends = (function () {
+  var extendStatics = function (d, b) {
+    extendStatics =
+      Object.setPrototypeOf ||
+      ({ __proto__: [] } instanceof Array &&
         function (d, b) {
-          for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-        };
-      return extendStatics(d, b);
-    };
-    return function (d, b) {
-      extendStatics(d, b);
-      function __() {
-        this.constructor = d;
-      }
-      d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
-    };
-  })();
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+          d.__proto__ = b;
+        }) ||
+      function (d, b) {
+        for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      };
+    return extendStatics(d, b);
   };
+  return function (d, b) {
+    extendStatics(d, b);
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+  };
+})();
 
 (function (mod) {
   //[HyperMD] UMD patched!
@@ -3558,7 +3602,6 @@ var __importStar =
     exports.folderRegistry =
     exports.RequestRangeResult =
       void 0;
-  CodeMirror = __importStar(CodeMirror);
   var FlagArray = typeof Uint8Array === "undefined" ? Array : Uint8Array;
   var RequestRangeResult;
   (function (RequestRangeResult) {
@@ -3593,12 +3636,18 @@ var __importStar =
   //#region Utils
   /** break a TextMarker, move cursor to where marker is */
   function breakMark(cm, marker, chOffset) {
+    // TODO: update this to support making a selection rather than placing the cursor
     cm.operation(function () {
-      var pos = marker.find().from;
-      pos = { line: pos.line, ch: pos.ch + ~~chOffset };
-      cm.setCursor(pos);
-      cm.focus();
+      var fromPos = marker.find().from;
+      fromPos = { line: fromPos.line, ch: fromPos.ch + ~~chOffset };
+      var toPos = marker.find().to;
+      toPos = { line: toPos.line, ch: toPos.ch + ~~chOffset };
+      // need to clear before setting the cursor since some markers don't allow the
+      // cursor to be placed next to them
       marker.clear();
+      cm.setCursor(fromPos);
+      // cm.setSelection(fromPos, toPos);
+      cm.focus();
     });
   }
   exports.breakMark = breakMark;
@@ -3635,7 +3684,7 @@ var __importStar =
   /********************************************************************************** */
   //#region Addon Class
   var Fold = /** @class */ (function (_super) {
-    __extends(Fold, _super);
+    ___extends(Fold, _super);
     function Fold(cm) {
       var _this = _super.call(this, cm) || this;
       _this.cm = cm;
@@ -3659,19 +3708,40 @@ var __importStar =
           cm.on("changes", _this.onChange);
           cm.on("viewportChange", _this.onViewportChange);
           cm.on("cursorActivity", _this.onCursorActivity);
+          cm.on("gutterClick", _this.onGutterClick);
         } else {
           cm.off("changes", _this.onChange);
           cm.off("viewportChange", _this.onViewportChange);
           cm.off("cursorActivity", _this.onCursorActivity);
+          cm.off("gutterClick", _this.onGutterClick);
         }
       };
       this.onViewportChange = function (cm, from, to) {
         _this.startFold(from, to);
       };
+      this.onGutterClick = function (cm, line, gutter, clickEvent) {
+        // check for widgets to render when lists or headers are expanded
+        if (
+          gutter === "CodeMirror-foldgutter" &&
+          clickEvent.composedPath()[0]?.hasClass("CodeMirror-foldgutter-folded")
+        ) {
+          _this.startFoldImmediately(line, cm.getViewport().to + 1);
+        }
+      };
+      this.checkForPreview = require$$0.debounce(
+        function () {
+          document.querySelector("#math-preview")?.addClass("float-win-hidden");
+        },
+        500,
+        true
+      );
       this.onChange = function (cm, changes) {
         var changedMarkers = [];
         for (var _i = 0, changes_1 = changes; _i < changes_1.length; _i++) {
           var change = changes_1[_i];
+          if (change.removed && change.removed.filter(text => text.includes("$")).length) {
+            _this.checkForPreview();
+          }
           var markers = cm.findMarks(change.from, change.to);
           for (var _a = 0, markers_1 = markers; _a < markers_1.length; _a++) {
             var marker = markers_1[_a];
@@ -3753,6 +3823,7 @@ var __importStar =
     }
     /** enable/disable one kind of folder, in current editor */
     Fold.prototype.setStatus = function (cm, type, enabled) {
+      // this logic will disable hmdFold completely if no folders are found in the registry
       var prevStatus;
       for (var _type in this._enabled) {
         if (this._enabled[_type]) {
@@ -3797,7 +3868,11 @@ var __importStar =
       if (!cfrom) cfrom = from;
       var cm = this.cm;
       var markers = cm.findMarks(from, to);
-      if (markers.length !== 0) return RequestRangeResult.HAS_MARKERS;
+      // nil: filter out any text selection markers so that we don't bug out the entire fold logic, ugh
+      markers = markers.filter(marker => marker.className != "CodeMirror-selectedtext");
+      if (markers.length !== 0) {
+        return RequestRangeResult.HAS_MARKERS;
+      }
       this._quickFoldHint.push(from.line);
       // store "crange" for the coming marker
       this._lastCRange = [cfrom, cto];
@@ -3822,8 +3897,9 @@ var __importStar =
       var _this = this;
       var cm = this.cm;
       var viewPort = cm.getViewport();
-      fromLine = fromLine || viewPort.from; // cm.firstLine();
-      toLine = (toLine || viewPort.to) + 1; // cm.lastLine()) + 1;
+      // nil: if no from/to is passed, only scan the visible viewport, rather than the entire file
+      fromLine = fromLine >= 0 ? fromLine : viewPort.from; // cm.firstLine();
+      toLine = (toLine >= 0 ? toLine : viewPort.to) + 1; // cm.lastLine()) + 1;
       this._quickFoldHint = [];
       this.setPos(fromLine, 0, true);
       cm.operation(function () {
@@ -3839,6 +3915,8 @@ var __importStar =
             // @see CodeMirror's findMarksAt
             var lineMarkers = line.markedSpans;
             if (lineMarkers) {
+              // nil: filter out any text selection markers so that we don't bug out the entire fold logic, ugh
+              lineMarkers = lineMarkers.filter(markedSpan => markedSpan.marker.className !== "CodeMirror-selectedtext");
               for (var i = 0; i < lineMarkers.length; ++i) {
                 var span = lineMarkers[i];
                 var spanFrom = span.from == null ? 0 : span.from;
@@ -3954,7 +4032,6 @@ var __importStar =
   /** ADDON GETTER (Singleton Pattern): a editor can have only one Fold instance */
   exports.getAddon = core_1.Addon.Getter("Fold", Fold);
 });
-});
 
 // HyperMD, copyright (c) by laobubu
 // Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
@@ -4025,56 +4102,17 @@ var __importStar =
     fold_1.registerFolder("link", exports.LinkFolder, true);
 });
 
-createCommonjsModule(function (module) {
 // HyperMD, copyright (c) by laobubu
 // Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
 //
 // DESCRIPTION: Fold Image Markers `![](xxx)`
 //
 
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
-
 (function (mod) {
   mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.ReadLink);
 })(function (require, exports, CodeMirror, fold_1) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ImageFolder = void 0;
-  CodeMirror = __importStar(CodeMirror);
   var ImageFolder = function (stream, token) {
     var cm = stream.cm;
     var imgRE = /(\bimage-marker\b)|(\bformatting-embed\b)/;
@@ -4115,7 +4153,7 @@ var __importStar =
           url = split.url;
           title = split.title;
           var _matches;
-          if (_matches = url.match(/^([^|]+)\|(.*)$/)) {
+          if ((_matches = url.match(/^([^|]+)\|(.*)$/))) {
             url = _matches[1];
             dimensions = _matches[2];
           }
@@ -4123,6 +4161,10 @@ var __importStar =
         {
           // extract the alt
           alt = cm.getRange({ line: lineNo, ch: from.ch + 2 }, { line: lineNo, ch: url_begin.token.start - 1 });
+        }
+        var _altMatches;
+        if ((_altMatches = alt.match(/^(?:([^|]*)\|)?([0-9x]+)$/))) {
+          dimensions = _altMatches[2];
         }
         var img = document.createElement("img");
         var marker = cm.markText(from, to, {
@@ -4166,7 +4208,7 @@ var __importStar =
         img.alt = alt;
         img.title = title;
         var _url, _resolvedUrl;
-        if (/^(app|https):\/\//.test(url)) {
+        if (/^(app|http|https):\/\//.test(url)) {
           _url = url;
         } else {
           _resolvedUrl = window.app.metadataCache.getFirstLinkpathDest(decodeURIComponent(url), "");
@@ -4179,6 +4221,7 @@ var __importStar =
         }
 
         img.setAttribute("data-src", _url);
+        if (_resolvedUrl && _resolvedUrl.path) img.setAttribute("data-path", _resolvedUrl.path);
         img.setAttribute("src", _url);
         if (dimensions) {
           var _dims = dimensions.match(/^([0-9]+)x?([0-9]+)?$/);
@@ -4209,62 +4252,2227 @@ var __importStar =
       title = mat[2] ? mat[2] : "";
       if (title.charAt(0) === '"') title = title.substr(1, title.length - 2).replace(/\\"/g, '"');
     }
-    return { url: url, title: title };
+    return { url: url?.trim(), title: title };
   }
   exports.ImageFolder = ImageFolder;
   fold_1.registerFolder("image", exports.ImageFolder, true);
 });
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, (HyperMD.FoldCode = HyperMD.FoldCode || {}), CodeMirror, HyperMD, HyperMD.Fold);
+})(function (require, exports, CodeMirror, core_1, fold_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.getAddon =
+    exports.convertNumberToString =
+    exports.FoldCode =
+    exports.suggestedOption =
+    exports.defaultOption =
+    exports.CodeFolder =
+    exports.registerRenderer =
+    exports.rendererRegistry =
+      void 0;
+  exports.rendererRegistry = {};
+  /**
+   * Add a CodeRenderer to the System CodeRenderer Registry
+   *
+   * @param lang
+   * @param folder
+   * @param suggested enable this folder in suggestedEditorConfig
+   * @param force if a folder with same name is already exists, overwrite it. (dangerous)
+   */
+  function registerRenderer(info, force) {
+    if (!info || !info.name || !info.renderer) return;
+    var name = info.name;
+    var pattern = info.pattern;
+    var registry = exports.rendererRegistry;
+    if (name in registry) {
+      if (!force) {
+        throw new Error("CodeRenderer " + name + " already exists");
+      }
+    }
+    if (typeof pattern === "string") {
+      var t_1 = pattern.toLowerCase();
+      pattern = function (lang) {
+        return lang.toLowerCase() === t_1;
+      };
+    } else if (pattern instanceof RegExp) {
+      pattern = function (lang) {
+        return info.pattern.test(lang);
+      };
+    }
+    var newInfo = {
+      name: name,
+      suggested: !!info.suggested,
+      pattern: pattern,
+      renderer: info.renderer,
+    };
+    registry[name] = newInfo;
+    exports.defaultOption[name] = false;
+    exports.suggestedOption[name] = newInfo.suggested;
+  }
+  exports.registerRenderer = registerRenderer;
+  //#endregion
+  //#region FolderFunc for Addon/Fold -----------------------------------------------------
+  /** the FolderFunc for Addon/Fold */
+  var CodeFolder = function (stream, token) {
+    if (
+      token.start !== 0 ||
+      !token.type ||
+      token.type.indexOf("HyperMD-codeblock-begin") === -1 ||
+      !/([-\w]+)(\s*|\s+\{.+\}\s*)$/.test(token.string)
+    ) {
+      return null;
+    }
+    return exports.getAddon(stream.cm).fold(stream, token);
+  };
+  exports.CodeFolder = CodeFolder;
+  fold_1.registerFolder("code", exports.CodeFolder, true);
+  exports.defaultOption = {
+    /* will be populated by registerRenderer() */
+  };
+  exports.suggestedOption = {
+    /* will be populated by registerRenderer() */
+  };
+  core_1.suggestedEditorConfig.hmdFoldCode = exports.suggestedOption;
+  CodeMirror.defineOption("hmdFoldCode", exports.defaultOption, function (cm, newVal) {
+    ///// convert newVal's type to `Record<string, boolean>`, if it is not.
+    if (!newVal || typeof newVal === "boolean") {
+      newVal = newVal ? exports.suggestedOption : exports.defaultOption;
+    }
+    ///// apply config
+    var inst = exports.getAddon(cm);
+    for (var type in exports.rendererRegistry) {
+      inst.setStatus(type, newVal[type]);
+    }
+    // then, folding task will be queued by setStatus()
+  });
+  var FoldCode = /** @class */ (function () {
+    function FoldCode(cm) {
+      this.cm = cm;
+      /**
+       * stores renderer status for current editor
+       * @private To enable/disable renderer, use `setStatus()`
+       */
+      this._enabled = {};
+      /** renderers' output goes here */
+      this.folded = {};
+    }
+    /** enable/disable one kind of renderer, in current editor */
+    FoldCode.prototype.setStatus = function (type, enabled) {
+      if (!(type in exports.rendererRegistry)) return;
+      if (!this._enabled[type] !== !enabled) {
+        this._enabled[type] = !!enabled;
+        if (enabled) fold_1.getAddon(this.cm).startFold();
+        else this.clear(type);
+      }
+    };
+    /** Clear one type of rendered TextMarkers */
+    FoldCode.prototype.clear = function (type) {
+      var folded = this.folded[type];
+      if (!folded || !folded.length) return;
+      var info;
+      while ((info = folded.pop())) info.marker.clear();
+    };
+    FoldCode.prototype.clearAll = function () {
+      fold_1.getAddon(this.cm).startFold.stop();
+      for (var type in this.folded) {
+        var folded = this.folded[type];
+        var info;
+        while ((info = folded.pop())) {
+          info.marker.explicitlyCleared = false;
+          info.marker.clear();
+          info.marker = null;
+          info = null;
+        }
+      }
+    };
+    FoldCode.prototype.fold = function (stream, token) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      var _this = this;
+      var debug = false;
+      if (token.start !== 0 || !token.type || token.type.indexOf("HyperMD-codeblock-begin") === -1) {
+        return null;
+      }
+      var tmp = /([-\w]+)(\s*|\s+\{.+\}\s*)$/.exec(token.string);
+      var lang = tmp && tmp[1].toLowerCase();
+      var attributesStr = tmp && tmp[2] && tmp[2].trim();
+      var attributes = {};
+      if (attributesStr && attributesStr.length) {
+        attributes = fold_1.parseAttributes(attributesStr);
+      }
+      if (!lang) return null;
+      var renderer;
+      var type;
+      var cm = this.cm,
+        registry = exports.rendererRegistry,
+        _enabled = this._enabled;
+      for (var type_i in registry) {
+        var r = registry[type_i];
+        if (!_enabled[type_i]) continue;
+        if (!r.pattern(lang)) continue;
+        type = type_i;
+        renderer = r.renderer;
+        break;
+      }
+      if (!type) return null;
+      var from = { line: stream.lineNo, ch: 0 };
+      var to = null;
+      // find the end of code block
+      var lastLineCM = cm.lastLine();
+      var endLine = stream.lineNo + 1;
+      do {
+        var s = cm.getTokenAt({ line: endLine, ch: 1 });
+        if (s && s.type && s.type.indexOf("HyperMD-codeblock-end") !== -1) {
+          //FOUND END!
+          to = { line: endLine, ch: s.end };
+          break;
+        }
+      } while (++endLine < lastLineCM);
+      if (!to) return null;
+      // request the range
+      var rngReq = stream.requestRange(from, to);
+      if (rngReq !== fold_1.RequestRangeResult.OK) return null;
+      // now we can call renderer
+      var code = cm.getRange({ line: from.line + 1, ch: 0 }, { line: to.line, ch: 0 });
+      var info = {
+        editor: cm,
+        lang: lang,
+        attributes: attributes,
+        marker: null,
+        lineWidget: null,
+        el: null,
+        break: undefined_function,
+        changed: undefined_function,
+      };
+      var _a = renderer(code, info),
+        element = _a.element,
+        asyncRenderer = _a.asyncRenderer;
+      info.el = element;
+      var el = element;
+      if (!el) {
+        info.marker.clear();
+        return null;
+      }
+
+      var $wrapper = document.createElement("div");
+      $wrapper.className = contentClass + type;
+      $wrapper.style.minHeight = "1em";
+      $wrapper.appendChild(el);
+
+      var lineWidget = (info.lineWidget = cm.addLineWidget(to.line, $wrapper, {
+        above: false,
+        coverGutter: false,
+        handleMouseEvents: false,
+        className: "rendered-code-block rendered-widget",
+        noHScroll: false,
+        showIfHidden: false,
+      }));
+      if (asyncRenderer) {
+        asyncRenderer();
+      }
+      var wrapperLine = stream.lineNo;
+
+      cm.addLineClass(wrapperLine, "wrap", "rendered-code-block-wrapper");
+      cm.addLineClass(wrapperLine, "wrap", `rendered-${type}-wrapper`);
+      // watch for any changes to the widget wrapper or its children
+      // so that we can call widget.changed() to remeasure the element
+      // and prevent any cursor placement issues
+      // this allows our widget to shrink or grow to any size we want
+
+      function updateWidget(widget) {
+        try {
+          widget.changed();
+        } catch (err) {
+        }
+      }
+
+      var widgetChanged = require$$0.debounce(updateWidget, 250);
+
+      let observer = new ResizeObserver((mutations, observer) => {
+        try {
+          widgetChanged(lineWidget);
+        } catch {}
+      });
+
+      observer.observe($wrapper);
+
+      var $stub = document.createElement("span");
+      $stub.className = stubClass + type;
+      $stub.textContent = "<CODE>";
+      var marker = (info.marker = cm.markText(from, to, {
+        replacedWith: $stub,
+        inclusiveLeft: true,
+        inclusiveRight: true,
+      }));
+
+      info.changed = function () {
+        try {
+          lineWidget.changed();
+        } catch (err) {
+        }
+      };
+      info.break = function () {
+        observer.disconnect();
+        observer = null;
+        fold_1.breakMark(cm, marker);
+      };
+      $stub.addEventListener("click", info.break, false);
+      var redraw = info.redraw;
+      if (redraw) {
+        lineWidget.on("redraw", info.redraw);
+      }
+      function onCodeBlockClear() {
+        if (redraw) {
+          lineWidget.off("redraw", info.redraw);
+        }
+        marker.off("clear", onCodeBlockClear);
+        $stub.removeEventListener("click", info.break);
+        if (info.unload) {
+          try {
+            info.unload();
+            info.unload = null;
+            info = null;
+            if (debug) ;
+          } catch (err) {
+          }
+        }
+        var markers = _this.folded[type];
+        var idx;
+        if (markers && (idx = markers.indexOf(info)) !== -1) markers.splice(idx, 1);
+        cm.removeLineClass(wrapperLine, "wrap", `rendered-${type}-wrapper`);
+        cm.removeLineClass(wrapperLine, "wrap", "rendered-code-block-wrapper");
+        if (observer) observer.disconnect();
+        lineWidget.clear();
+        lineWidget = null;
+        observer = null;
+        marker.replacedWith = null;
+        marker.widgetNode = null;
+        marker = null;
+      }
+      marker.on("clear", onCodeBlockClear);
+      if (!(type in this.folded)) this.folded[type] = [info];
+      else this.folded[type].push(info);
+      return marker;
+    };
+    return FoldCode;
+  })();
+  exports.FoldCode = FoldCode;
+  //#endregion
+  // End
+  var contentClass = "hmd-fold-code-content hmd-fold-code-"; // + renderer_type
+  var stubClass = "hmd-fold-code-stub hmd-fold-code-"; // + renderer_type
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  var undefined_function = function () {};
+  /** ADDON GETTER (Singleton Pattern): a editor can have only one FoldCode instance */
+  exports.getAddon = core_1.Addon.Getter("FoldCode", FoldCode, exports.defaultOption /** if has options */);
+});
+
+// HyperMD, copyright (c) by laobubu
+// Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
+//
+// DESCRIPTION: Fold and render embedded HTML snippets
+
+(function (mod) {
+  //[HyperMD] UMD patched!
+  /*plain env*/ mod(null, (HyperMD.FoldHTML = HyperMD.FoldHTML || {}), CodeMirror, HyperMD, HyperMD.Fold);
+})(function (require, exports, CodeMirror, core_1, fold_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.getAddon =
+    exports.FoldHTML =
+    exports.suggestedOption =
+    exports.defaultOption =
+    exports.HTMLFolder =
+    exports.defaultRenderer =
+    exports.defaultChecker =
+      void 0;
+
+  const purifySettings = {
+    ALLOW_UNKNOWN_PROTOCOLS: true,
+    IN_PLACE: true,
+    // RETURN_DOM_FRAGMENT: true,
+    // RETURN_DOM_IMPORT: true,
+    FORBID_TAGS: ["style"],
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["frameborder", "allowfullscreen", "allow", "aria-label-position"],
+  };
+  // export type CheckerFunc = (html: string, pos: Position, cm: cm_t) => boolean;
+  var defaultChecker = function (html) {
+    // TODO: Remove this since we're now using DOMPurify?
+    if (/^<(?:br)/i.test(html)) {
+      return false; // check first element...
+    }
+    if (/<(?:script|style|link|meta|object|embed)/i.test(html)) {
+      // TODO: dyamically add/remove iframe block
+      return false; // don't allow some tags
+    }
+    if (/\son\w+\s*=/i.test(html)) {
+      return false; // don't allow `onclick=` etc.
+    }
+    if (/(src|background|href)\s*=\s*["']?javascript:/i.test(html)) {
+      return false; // don't allow `src="javascript:` etc.
+    }
+    return true;
+  };
+  exports.defaultChecker = defaultChecker;
+  /**
+   * Create HTMLElement from HTML string and do special process with HyperMD.ReadLink
+   */
+  var defaultRenderer = function (html, pos, cm) {
+    var tagBegin = /^<(\w+)\s*/.exec(html);
+    if (!tagBegin) return null;
+    var tagName = tagBegin[1];
+    var ans = document.createElement(tagName);
+    var propRE = /([\w\:\-]+)(?:\s*=\s*((['"]).*?\3|\S+))?\s*/g;
+    var propLastIndex = (propRE.lastIndex = tagBegin[0].length);
+    var tmp;
+    while ((tmp = propRE.exec(html))) {
+      if (tmp.index > propLastIndex) break; // emmm
+      var propName = tmp[1];
+      var propValue = tmp[2]; // could be wrapped by " or '
+      if (propValue && /^['"]/.test(propValue)) propValue = propValue.slice(1, -1);
+      ans.setAttribute(propName, propValue);
+      propLastIndex = propRE.lastIndex;
+    }
+    if ("innerHTML" in ans) {
+      // node may contain innerHTML
+      var startCh = html.indexOf(">", propLastIndex) + 1;
+      var endCh = html.length;
+      if ((tmp = new RegExp("</" + tagName + "\\s*>\\s*$", "i").exec(html))) {
+        endCh = tmp.index;
+      }
+      var innerHTML = html.slice(startCh, endCh);
+      if (innerHTML) {
+        ans.innerHTML = innerHTML;
+      }
+      window.DOMPurify.sanitize(ans, purifySettings);
+      // ans.replaceWith(cleanHTML);
+      // resolve relative URLs and change default behavoirs
+      core_1.visitElements([ans], function (el) {
+        var tagName = el.tagName.toLowerCase();
+        if (tagName === "a") {
+          // for links, if target not set, add target="_blank"
+          if (!el.getAttribute("target")) el.setAttribute("target", "_blank");
+        }
+        // Then, resovle relative URLs
+        var urlAttrs = {
+          a: ["href"],
+          img: ["src"],
+          iframe: ["src"],
+        }[tagName];
+        if (urlAttrs) {
+          for (var i = 0; i < urlAttrs.length; i++) {
+            var _url, _resolvedUrl;
+            var attr = urlAttrs[i];
+            var attrValue = el.getAttribute(attr);
+            _resolvedUrl = window.app.metadataCache.getFirstLinkpathDest(decodeURI(attrValue), "");
+            if (_resolvedUrl) {
+              _url = window.app.vault.getResourcePath(_resolvedUrl);
+            } else {
+              _url = "";
+            }
+            if (_url) {
+              el.setAttribute(attr, decodeURI(attrValue));
+              el.addClass("internal-link");
+            }
+          }
+        }
+      });
+    }
+    return ans;
+  };
+  exports.defaultRenderer = defaultRenderer;
+  /********************************************************************************** */
+  var stubClass = "hmd-fold-html-stub";
+  var stubClassOmittable = "hmd-fold-html-stub omittable";
+  /********************************************************************************** */
+  //#region Folder
+  /**
+   * Detect if a token is a beginning of HTML, and fold it!
+   *
+   * @see FolderFunc in ./fold.ts
+   */
+  var HTMLFolder = function (stream, token) {
+    if (!token.type || !/ hmd-html-begin/.test(token.type)) return null;
+    var endInfo = stream.findNext(/ hmd-html-\w+/, true); // find next html start/end token
+    if (!endInfo || !/ hmd-html-end/.test(endInfo.token.type) || / hmd-html-unclosed/.test(endInfo.token.type))
+      return null;
+    var cm = stream.cm;
+    var from = { line: stream.lineNo, ch: token.start };
+    var to = { line: endInfo.lineNo, ch: endInfo.token.end };
+    var inlineMode = from.ch != 0 || to.ch < cm.getLine(to.line).length;
+
+    var addon = exports.getAddon(cm);
+    var html = cm.getRange(from, to);
+
+    var reqAns = stream.requestRange(from, to);
+    if (reqAns !== fold_1.RequestRangeResult.OK) return null;
+
+    // now we are ready to fold and render!
+    var marker = addon.renderAndInsert(html, from, to, inlineMode);
+    return marker;
+  };
+  exports.HTMLFolder = HTMLFolder;
+  //#endregion
+  fold_1.registerFolder("html", exports.HTMLFolder, false);
+  exports.defaultOption = {
+    checker: exports.defaultChecker,
+    renderer: exports.defaultRenderer,
+    stubText: "<HTML>",
+    isolatedTagName: /^(?:div|pre|details|form|mark|table|iframe|ul|ol|input|textarea|p|summary|a)$/i,
+  };
+  exports.suggestedOption = {};
+  core_1.suggestedEditorConfig.hmdFoldHTML = exports.suggestedOption;
+  CodeMirror.defineOption("hmdFoldHTML", exports.defaultOption, function (cm, newVal) {
+    ///// convert newVal's type to `Partial<Options>`, if it is not.
+    if (!newVal) {
+      newVal = {};
+    } else if (typeof newVal == "function") {
+      newVal = { checker: newVal };
+    } else if (typeof newVal != "object") {
+      console.warn("[HyperMD][FoldHTML] incorrect option value type");
+      newVal = {};
+    }
+    ///// apply config and write new values into cm
+    var inst = exports.getAddon(cm);
+    for (var k in exports.defaultOption) {
+      inst[k] = k in newVal ? newVal[k] : exports.defaultOption[k];
+    }
+    ///// Type Check
+    if (inst.isolatedTagName && !(inst.isolatedTagName instanceof RegExp)) {
+      if (window["ECHOMD_DEBUG"]) {
+        console.error("[HyperMD][FoldHTML] option isolatedTagName only accepts RegExp");
+      }
+      inst.isolatedTagName = exports.defaultOption.isolatedTagName;
+    }
+  });
+  //#endregion
+  /********************************************************************************** */
+  //#region Addon Class
+  var FoldHTML = /** @class */ (function () {
+    function FoldHTML(cm) {
+      this.cm = cm;
+      // options will be initialized to defaultOption when constructor is finished
+    }
+    /**
+     * Render HTML, insert into editor and return the marker
+     */
+    FoldHTML.prototype.renderAndInsert = function (html, from, to, inlineMode) {
+      var cm = this.cm;
+      var stub = this.makeStub();
+      var el = this.renderer(html, from, cm);
+      var breakFn = function () {
+        return fold_1.breakMark(cm, marker);
+      };
+      if (!el) return null;
+      stub.addEventListener("click", breakFn, false);
+      if (!el.tagName.match(this.isolatedTagName || /^$/)) el.addEventListener("click", breakFn, false);
+      var replacedWith;
+      var marker;
+      var isBlock = false;
+      function updateWidgetByEl(targetEl) {
+        const found = cm.hmd.Fold.folded.html.filter(
+          el => el.replacedWith?.contains(targetEl) || el.associatedLineWidget?.node?.contains(targetEl)
+        );
+        if (found.length) {
+          found[0].changed();
+          // console.log("html widget size change");
+        }
+      }
+      if (inlineMode) {
+        /** put HTML inline */
+        stub.className = stubClassOmittable;
+
+        var span = document.createElement("span");
+        span.setAttribute("class", "hmd-fold-html rendered-widget");
+        span.setAttribute("style", "display: inline-flex");
+        span.appendChild(stub);
+        span.appendChild(el);
+
+        replacedWith = span;
+        /** If element size changed, we notify CodeMirror */
+
+        function watchInlineSize(w, h, el) {
+          try {
+            updateWidgetByEl(el);
+          } catch (err) {}
+        }
+
+        const inlineObserverCallback = entries => {
+          for (let entry of entries) {
+            if (entry.contentRect) {
+              var width = entry.contentRect.width,
+                height = entry.contentRect.height;
+              try {
+                watchInlineSize(width, height, entry.target);
+              } catch {}
+              entry = null;
+            }
+          }
+        };
+        if (!cm.inlineHTMLObserver) {
+          cm.inlineHTMLObserver = new ResizeObserver(inlineObserverCallback);
+        }
+
+        cm.inlineHTMLObserver.observe(el);
+
+        function onInlineMarkClear() {
+          cm.inlineHTMLObserver.unobserve(el);
+          marker.off("clear", onInlineMarkClear);
+          stub.removeEventListener("click", breakFn);
+          el.removeEventListener("click", breakFn);
+          stub = null;
+          el = null;
+          marker.replacedWith = null;
+          marker.widgetNode = null;
+          marker = null;
+        }
+
+        setTimeout(function () {
+          marker.on("clear", onInlineMarkClear);
+        }, 0);
+      } else {
+        isBlock = true;
+        stub.className = stubClass;
+        /** use lineWidget to insert element */
+        replacedWith = stub;
+        // this causes any text selection to immediately stop if the cursor is coming out of a block html element
+        // without this, the line widget will get duplicated on cursor selection. see issue #51
+        if (cm.state.selectingText) cm.state.selectingText();
+        var lineWidget_1;
+        if (!cm.getLineHandle(from.line).widgets || cm.getLineHandle(from.line).widgets?.length === 0) {
+          lineWidget_1 = cm.addLineWidget(to.line, el, {
+            above: false,
+            coverGutter: false,
+            className: "rendered-html rendered-html-block rendered-widget",
+            noHScroll: false,
+            showIfHidden: false,
+          });
+        } else if (cm.getLineHandle(from.line).widgets?.length) {
+          lineWidget_1 = cm.getLineHandle(from.line).widgets[0];
+        } else {
+          return;
+        }
+        var wrapperLine = from.line;
+        cm.addLineClass(wrapperLine, "wrap", "rendered-html-block-wrapper");
+
+        const blockHTMLObserverCallback = entries => {
+          for (let entry of entries) {
+            if (entry.contentRect) {
+              try {
+                updateWidgetByEl(entry.target);
+              } catch {}
+            }
+          }
+        };
+        if (!cm.blockHTMLObserver) {
+          cm.blockHTMLObserver = new ResizeObserver(blockHTMLObserverCallback);
+        }
+        cm.blockHTMLObserver.observe(el);
+        // Marker is not created yet. Bind events later
+        function onBlockClear() {
+          marker.off("clear", onBlockClear);
+          cm.blockHTMLObserver.unobserve(el);
+          stub.removeEventListener("click", breakFn);
+          el.removeEventListener("click", breakFn);
+          stub = null;
+          el = null;
+          lineWidget_1.clear();
+          lineWidget_1 = null;
+          cm.removeLineClass(wrapperLine, "wrap", "rendered-html-block-wrapper");
+          marker.replacedWith = null;
+          marker.widgetNode = null;
+          marker.associatedLineWidget = null;
+          marker = null;
+        }
+        setTimeout(function () {
+          marker.on("clear", onBlockClear);
+        }, 0);
+      }
+      marker = cm.markText(from, to, {
+        replacedWith: replacedWith,
+        atomic: false,
+        inclusiveLeft: isBlock,
+        inclusiveRight: isBlock,
+      });
+      marker.associatedLineWidget = lineWidget_1;
+
+      return marker;
+    };
+    FoldHTML.prototype.makeStub = function () {
+      var ans = document.createElement("span");
+      ans.setAttribute("class", stubClass);
+      ans.textContent = this.stubText || "<HTML>";
+      return ans;
+    };
+    return FoldHTML;
+  })();
+  exports.FoldHTML = FoldHTML;
+  //#endregion
+  /** ADDON GETTER (Singleton Pattern): a editor can have only one FoldHTML instance */
+  exports.getAddon = core_1.Addon.Getter("FoldHTML", FoldHTML, exports.defaultOption /** if has options */);
+});
+
+const debug = (
+  typeof process === 'object' &&
+  process.env &&
+  process.env.NODE_DEBUG &&
+  /\bsemver\b/i.test(process.env.NODE_DEBUG)
+) ? (...args) => console.error('SEMVER', ...args)
+  : () => {};
+
+var debug_1 = debug;
+
+// Note: this is the semver.org version of the spec that it implements
+// Not necessarily the package version of this code.
+const SEMVER_SPEC_VERSION = '2.0.0';
+
+const MAX_LENGTH$1 = 256;
+const MAX_SAFE_INTEGER$1 = Number.MAX_SAFE_INTEGER ||
+  /* istanbul ignore next */ 9007199254740991;
+
+// Max safe segment length for coercion.
+const MAX_SAFE_COMPONENT_LENGTH = 16;
+
+var constants = {
+  SEMVER_SPEC_VERSION,
+  MAX_LENGTH: MAX_LENGTH$1,
+  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
+  MAX_SAFE_COMPONENT_LENGTH
+};
+
+var re_1 = createCommonjsModule(function (module, exports) {
+const { MAX_SAFE_COMPONENT_LENGTH } = constants;
+
+exports = module.exports = {};
+
+// The actual regexps go on exports.re
+const re = exports.re = [];
+const src = exports.src = [];
+const t = exports.t = {};
+let R = 0;
+
+const createToken = (name, value, isGlobal) => {
+  const index = R++;
+  debug_1(index, value);
+  t[name] = index;
+  src[index] = value;
+  re[index] = new RegExp(value, isGlobal ? 'g' : undefined);
+};
+
+// The following Regular Expressions can be used for tokenizing,
+// validating, and parsing SemVer version strings.
+
+// ## Numeric Identifier
+// A single `0`, or a non-zero digit followed by zero or more digits.
+
+createToken('NUMERICIDENTIFIER', '0|[1-9]\\d*');
+createToken('NUMERICIDENTIFIERLOOSE', '[0-9]+');
+
+// ## Non-numeric Identifier
+// Zero or more digits, followed by a letter or hyphen, and then zero or
+// more letters, digits, or hyphens.
+
+createToken('NONNUMERICIDENTIFIER', '\\d*[a-zA-Z-][a-zA-Z0-9-]*');
+
+// ## Main Version
+// Three dot-separated numeric identifiers.
+
+createToken('MAINVERSION', `(${src[t.NUMERICIDENTIFIER]})\\.` +
+                   `(${src[t.NUMERICIDENTIFIER]})\\.` +
+                   `(${src[t.NUMERICIDENTIFIER]})`);
+
+createToken('MAINVERSIONLOOSE', `(${src[t.NUMERICIDENTIFIERLOOSE]})\\.` +
+                        `(${src[t.NUMERICIDENTIFIERLOOSE]})\\.` +
+                        `(${src[t.NUMERICIDENTIFIERLOOSE]})`);
+
+// ## Pre-release Version Identifier
+// A numeric identifier, or a non-numeric identifier.
+
+createToken('PRERELEASEIDENTIFIER', `(?:${src[t.NUMERICIDENTIFIER]
+}|${src[t.NONNUMERICIDENTIFIER]})`);
+
+createToken('PRERELEASEIDENTIFIERLOOSE', `(?:${src[t.NUMERICIDENTIFIERLOOSE]
+}|${src[t.NONNUMERICIDENTIFIER]})`);
+
+// ## Pre-release Version
+// Hyphen, followed by one or more dot-separated pre-release version
+// identifiers.
+
+createToken('PRERELEASE', `(?:-(${src[t.PRERELEASEIDENTIFIER]
+}(?:\\.${src[t.PRERELEASEIDENTIFIER]})*))`);
+
+createToken('PRERELEASELOOSE', `(?:-?(${src[t.PRERELEASEIDENTIFIERLOOSE]
+}(?:\\.${src[t.PRERELEASEIDENTIFIERLOOSE]})*))`);
+
+// ## Build Metadata Identifier
+// Any combination of digits, letters, or hyphens.
+
+createToken('BUILDIDENTIFIER', '[0-9A-Za-z-]+');
+
+// ## Build Metadata
+// Plus sign, followed by one or more period-separated build metadata
+// identifiers.
+
+createToken('BUILD', `(?:\\+(${src[t.BUILDIDENTIFIER]
+}(?:\\.${src[t.BUILDIDENTIFIER]})*))`);
+
+// ## Full Version String
+// A main version, followed optionally by a pre-release version and
+// build metadata.
+
+// Note that the only major, minor, patch, and pre-release sections of
+// the version string are capturing groups.  The build metadata is not a
+// capturing group, because it should not ever be used in version
+// comparison.
+
+createToken('FULLPLAIN', `v?${src[t.MAINVERSION]
+}${src[t.PRERELEASE]}?${
+  src[t.BUILD]}?`);
+
+createToken('FULL', `^${src[t.FULLPLAIN]}$`);
+
+// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
+// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
+// common in the npm registry.
+createToken('LOOSEPLAIN', `[v=\\s]*${src[t.MAINVERSIONLOOSE]
+}${src[t.PRERELEASELOOSE]}?${
+  src[t.BUILD]}?`);
+
+createToken('LOOSE', `^${src[t.LOOSEPLAIN]}$`);
+
+createToken('GTLT', '((?:<|>)?=?)');
+
+// Something like "2.*" or "1.2.x".
+// Note that "x.x" is a valid xRange identifer, meaning "any version"
+// Only the first item is strictly required.
+createToken('XRANGEIDENTIFIERLOOSE', `${src[t.NUMERICIDENTIFIERLOOSE]}|x|X|\\*`);
+createToken('XRANGEIDENTIFIER', `${src[t.NUMERICIDENTIFIER]}|x|X|\\*`);
+
+createToken('XRANGEPLAIN', `[v=\\s]*(${src[t.XRANGEIDENTIFIER]})` +
+                   `(?:\\.(${src[t.XRANGEIDENTIFIER]})` +
+                   `(?:\\.(${src[t.XRANGEIDENTIFIER]})` +
+                   `(?:${src[t.PRERELEASE]})?${
+                     src[t.BUILD]}?` +
+                   `)?)?`);
+
+createToken('XRANGEPLAINLOOSE', `[v=\\s]*(${src[t.XRANGEIDENTIFIERLOOSE]})` +
+                        `(?:\\.(${src[t.XRANGEIDENTIFIERLOOSE]})` +
+                        `(?:\\.(${src[t.XRANGEIDENTIFIERLOOSE]})` +
+                        `(?:${src[t.PRERELEASELOOSE]})?${
+                          src[t.BUILD]}?` +
+                        `)?)?`);
+
+createToken('XRANGE', `^${src[t.GTLT]}\\s*${src[t.XRANGEPLAIN]}$`);
+createToken('XRANGELOOSE', `^${src[t.GTLT]}\\s*${src[t.XRANGEPLAINLOOSE]}$`);
+
+// Coercion.
+// Extract anything that could conceivably be a part of a valid semver
+createToken('COERCE', `${'(^|[^\\d])' +
+              '(\\d{1,'}${MAX_SAFE_COMPONENT_LENGTH}})` +
+              `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?` +
+              `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?` +
+              `(?:$|[^\\d])`);
+createToken('COERCERTL', src[t.COERCE], true);
+
+// Tilde ranges.
+// Meaning is "reasonably at or greater than"
+createToken('LONETILDE', '(?:~>?)');
+
+createToken('TILDETRIM', `(\\s*)${src[t.LONETILDE]}\\s+`, true);
+exports.tildeTrimReplace = '$1~';
+
+createToken('TILDE', `^${src[t.LONETILDE]}${src[t.XRANGEPLAIN]}$`);
+createToken('TILDELOOSE', `^${src[t.LONETILDE]}${src[t.XRANGEPLAINLOOSE]}$`);
+
+// Caret ranges.
+// Meaning is "at least and backwards compatible with"
+createToken('LONECARET', '(?:\\^)');
+
+createToken('CARETTRIM', `(\\s*)${src[t.LONECARET]}\\s+`, true);
+exports.caretTrimReplace = '$1^';
+
+createToken('CARET', `^${src[t.LONECARET]}${src[t.XRANGEPLAIN]}$`);
+createToken('CARETLOOSE', `^${src[t.LONECARET]}${src[t.XRANGEPLAINLOOSE]}$`);
+
+// A simple gt/lt/eq thing, or just "" to indicate "any version"
+createToken('COMPARATORLOOSE', `^${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]})$|^$`);
+createToken('COMPARATOR', `^${src[t.GTLT]}\\s*(${src[t.FULLPLAIN]})$|^$`);
+
+// An expression to strip any whitespace between the gtlt and the thing
+// it modifies, so that `> 1.2.3` ==> `>1.2.3`
+createToken('COMPARATORTRIM', `(\\s*)${src[t.GTLT]
+}\\s*(${src[t.LOOSEPLAIN]}|${src[t.XRANGEPLAIN]})`, true);
+exports.comparatorTrimReplace = '$1$2$3';
+
+// Something like `1.2.3 - 1.2.4`
+// Note that these all use the loose form, because they'll be
+// checked against either the strict or loose comparator form
+// later.
+createToken('HYPHENRANGE', `^\\s*(${src[t.XRANGEPLAIN]})` +
+                   `\\s+-\\s+` +
+                   `(${src[t.XRANGEPLAIN]})` +
+                   `\\s*$`);
+
+createToken('HYPHENRANGELOOSE', `^\\s*(${src[t.XRANGEPLAINLOOSE]})` +
+                        `\\s+-\\s+` +
+                        `(${src[t.XRANGEPLAINLOOSE]})` +
+                        `\\s*$`);
+
+// Star ranges basically just allow anything at all.
+createToken('STAR', '(<|>)?=?\\s*\\*');
+// >=0.0.0 is like a star
+createToken('GTE0', '^\\s*>=\\s*0\.0\.0\\s*$');
+createToken('GTE0PRE', '^\\s*>=\\s*0\.0\.0-0\\s*$');
+});
+
+// parse out just the options we care about so we always get a consistent
+// obj with keys in a consistent order.
+const opts = ['includePrerelease', 'loose', 'rtl'];
+const parseOptions = options =>
+  !options ? {}
+  : typeof options !== 'object' ? { loose: true }
+  : opts.filter(k => options[k]).reduce((options, k) => {
+    options[k] = true;
+    return options
+  }, {});
+var parseOptions_1 = parseOptions;
+
+const numeric = /^[0-9]+$/;
+const compareIdentifiers$1 = (a, b) => {
+  const anum = numeric.test(a);
+  const bnum = numeric.test(b);
+
+  if (anum && bnum) {
+    a = +a;
+    b = +b;
+  }
+
+  return a === b ? 0
+    : (anum && !bnum) ? -1
+    : (bnum && !anum) ? 1
+    : a < b ? -1
+    : 1
+};
+
+const rcompareIdentifiers = (a, b) => compareIdentifiers$1(b, a);
+
+var identifiers = {
+  compareIdentifiers: compareIdentifiers$1,
+  rcompareIdentifiers
+};
+
+const { MAX_LENGTH, MAX_SAFE_INTEGER } = constants;
+const { re, t } = re_1;
+
+
+const { compareIdentifiers } = identifiers;
+class SemVer {
+  constructor (version, options) {
+    options = parseOptions_1(options);
+
+    if (version instanceof SemVer) {
+      if (version.loose === !!options.loose &&
+          version.includePrerelease === !!options.includePrerelease) {
+        return version
+      } else {
+        version = version.version;
+      }
+    } else if (typeof version !== 'string') {
+      throw new TypeError(`Invalid Version: ${version}`)
+    }
+
+    if (version.length > MAX_LENGTH) {
+      throw new TypeError(
+        `version is longer than ${MAX_LENGTH} characters`
+      )
+    }
+
+    debug_1('SemVer', version, options);
+    this.options = options;
+    this.loose = !!options.loose;
+    // this isn't actually relevant for versions, but keep it so that we
+    // don't run into trouble passing this.options around.
+    this.includePrerelease = !!options.includePrerelease;
+
+    const m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL]);
+
+    if (!m) {
+      throw new TypeError(`Invalid Version: ${version}`)
+    }
+
+    this.raw = version;
+
+    // these are actually numbers
+    this.major = +m[1];
+    this.minor = +m[2];
+    this.patch = +m[3];
+
+    if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+      throw new TypeError('Invalid major version')
+    }
+
+    if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+      throw new TypeError('Invalid minor version')
+    }
+
+    if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+      throw new TypeError('Invalid patch version')
+    }
+
+    // numberify any prerelease numeric ids
+    if (!m[4]) {
+      this.prerelease = [];
+    } else {
+      this.prerelease = m[4].split('.').map((id) => {
+        if (/^[0-9]+$/.test(id)) {
+          const num = +id;
+          if (num >= 0 && num < MAX_SAFE_INTEGER) {
+            return num
+          }
+        }
+        return id
+      });
+    }
+
+    this.build = m[5] ? m[5].split('.') : [];
+    this.format();
+  }
+
+  format () {
+    this.version = `${this.major}.${this.minor}.${this.patch}`;
+    if (this.prerelease.length) {
+      this.version += `-${this.prerelease.join('.')}`;
+    }
+    return this.version
+  }
+
+  toString () {
+    return this.version
+  }
+
+  compare (other) {
+    debug_1('SemVer.compare', this.version, this.options, other);
+    if (!(other instanceof SemVer)) {
+      if (typeof other === 'string' && other === this.version) {
+        return 0
+      }
+      other = new SemVer(other, this.options);
+    }
+
+    if (other.version === this.version) {
+      return 0
+    }
+
+    return this.compareMain(other) || this.comparePre(other)
+  }
+
+  compareMain (other) {
+    if (!(other instanceof SemVer)) {
+      other = new SemVer(other, this.options);
+    }
+
+    return (
+      compareIdentifiers(this.major, other.major) ||
+      compareIdentifiers(this.minor, other.minor) ||
+      compareIdentifiers(this.patch, other.patch)
+    )
+  }
+
+  comparePre (other) {
+    if (!(other instanceof SemVer)) {
+      other = new SemVer(other, this.options);
+    }
+
+    // NOT having a prerelease is > having one
+    if (this.prerelease.length && !other.prerelease.length) {
+      return -1
+    } else if (!this.prerelease.length && other.prerelease.length) {
+      return 1
+    } else if (!this.prerelease.length && !other.prerelease.length) {
+      return 0
+    }
+
+    let i = 0;
+    do {
+      const a = this.prerelease[i];
+      const b = other.prerelease[i];
+      debug_1('prerelease compare', i, a, b);
+      if (a === undefined && b === undefined) {
+        return 0
+      } else if (b === undefined) {
+        return 1
+      } else if (a === undefined) {
+        return -1
+      } else if (a === b) {
+        continue
+      } else {
+        return compareIdentifiers(a, b)
+      }
+    } while (++i)
+  }
+
+  compareBuild (other) {
+    if (!(other instanceof SemVer)) {
+      other = new SemVer(other, this.options);
+    }
+
+    let i = 0;
+    do {
+      const a = this.build[i];
+      const b = other.build[i];
+      debug_1('prerelease compare', i, a, b);
+      if (a === undefined && b === undefined) {
+        return 0
+      } else if (b === undefined) {
+        return 1
+      } else if (a === undefined) {
+        return -1
+      } else if (a === b) {
+        continue
+      } else {
+        return compareIdentifiers(a, b)
+      }
+    } while (++i)
+  }
+
+  // preminor will bump the version up to the next minor release, and immediately
+  // down to pre-release. premajor and prepatch work the same way.
+  inc (release, identifier) {
+    switch (release) {
+      case 'premajor':
+        this.prerelease.length = 0;
+        this.patch = 0;
+        this.minor = 0;
+        this.major++;
+        this.inc('pre', identifier);
+        break
+      case 'preminor':
+        this.prerelease.length = 0;
+        this.patch = 0;
+        this.minor++;
+        this.inc('pre', identifier);
+        break
+      case 'prepatch':
+        // If this is already a prerelease, it will bump to the next version
+        // drop any prereleases that might already exist, since they are not
+        // relevant at this point.
+        this.prerelease.length = 0;
+        this.inc('patch', identifier);
+        this.inc('pre', identifier);
+        break
+      // If the input is a non-prerelease version, this acts the same as
+      // prepatch.
+      case 'prerelease':
+        if (this.prerelease.length === 0) {
+          this.inc('patch', identifier);
+        }
+        this.inc('pre', identifier);
+        break
+
+      case 'major':
+        // If this is a pre-major version, bump up to the same major version.
+        // Otherwise increment major.
+        // 1.0.0-5 bumps to 1.0.0
+        // 1.1.0 bumps to 2.0.0
+        if (
+          this.minor !== 0 ||
+          this.patch !== 0 ||
+          this.prerelease.length === 0
+        ) {
+          this.major++;
+        }
+        this.minor = 0;
+        this.patch = 0;
+        this.prerelease = [];
+        break
+      case 'minor':
+        // If this is a pre-minor version, bump up to the same minor version.
+        // Otherwise increment minor.
+        // 1.2.0-5 bumps to 1.2.0
+        // 1.2.1 bumps to 1.3.0
+        if (this.patch !== 0 || this.prerelease.length === 0) {
+          this.minor++;
+        }
+        this.patch = 0;
+        this.prerelease = [];
+        break
+      case 'patch':
+        // If this is not a pre-release version, it will increment the patch.
+        // If it is a pre-release it will bump up to the same patch version.
+        // 1.2.0-5 patches to 1.2.0
+        // 1.2.0 patches to 1.2.1
+        if (this.prerelease.length === 0) {
+          this.patch++;
+        }
+        this.prerelease = [];
+        break
+      // This probably shouldn't be used publicly.
+      // 1.0.0 'pre' would become 1.0.0-0 which is the wrong direction.
+      case 'pre':
+        if (this.prerelease.length === 0) {
+          this.prerelease = [0];
+        } else {
+          let i = this.prerelease.length;
+          while (--i >= 0) {
+            if (typeof this.prerelease[i] === 'number') {
+              this.prerelease[i]++;
+              i = -2;
+            }
+          }
+          if (i === -1) {
+            // didn't increment anything
+            this.prerelease.push(0);
+          }
+        }
+        if (identifier) {
+          // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+          // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+          if (this.prerelease[0] === identifier) {
+            if (isNaN(this.prerelease[1])) {
+              this.prerelease = [identifier, 0];
+            }
+          } else {
+            this.prerelease = [identifier, 0];
+          }
+        }
+        break
+
+      default:
+        throw new Error(`invalid increment argument: ${release}`)
+    }
+    this.format();
+    this.raw = this.version;
+    return this
+  }
+}
+
+var semver = SemVer;
+
+const compare = (a, b, loose) =>
+  new semver(a, loose).compare(new semver(b, loose));
+
+var compare_1 = compare;
+
+const gte = (a, b, loose) => compare_1(a, b, loose) >= 0;
+var gte_1 = gte;
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.FoldCode);
+})(function (require, exports, CodeMirror, fold_1, fold_code_1) {
+  var dependencyCheck = function () {
+    const plugin = window.app.plugins.getPlugin("obsidian-admonition");
+    return plugin?._loaded && gte_1(plugin?.manifest.version, "6.3.6") ? true : false;
+  };
+  var AdmonitionRenderer = function (code, info) {
+    const adType = info.lang.substring(3);
+    var el = document.createElement("div");
+    var asyncRenderer;
+    var ctx = new require$$0.Component();
+    ctx.sourcePath = info.editor.state.fileName;
+    if (dependencyCheck()) {
+      asyncRenderer = async () => {
+        try {
+          window.app.plugins.getPlugin("obsidian-admonition").postprocessor(adType, code, el, ctx);
+          ctx.load();
+        } catch (error) {
+          el.innerText = "Failed to render Admonition: " + error;
+        }
+        function unload() {
+          ctx._children[0].unload();
+          ctx.unload();
+          ctx._children[0] = null;
+          ctx._children = null;
+        }
+        info.unload = unload;
+      };
+    } else {
+      el.innerText = "Error: Unable to find the Admonitions plugin or Admonition version not 6.3.6 or higher";
+    }
+    return {
+      element: el,
+      asyncRenderer: asyncRenderer,
+    };
+  };
+  exports.AdmonitionRenderer = AdmonitionRenderer;
+
+  CodeMirror.defineOption("admonition", null, function (cm) {
+    fold_code_1.getAddon(cm).clear("admonition");
+    fold_1.getAddon(cm).startFold();
+  });
+  fold_code_1.registerRenderer({
+    name: "admonition",
+    pattern: /^ad-(?:[a-z]+)$/i,
+    renderer: exports.AdmonitionRenderer,
+    suggested: false,
+  });
+});
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.FoldCode);
+})(function (require, exports, CodeMirror, fold_1, fold_code_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.ChartRenderer = void 0;
+  var dependencyCheck = function () {
+    return window.app.plugins.getPlugin("obsidian-charts")?._loaded ? true : false;
+  };
+  var ChartRenderer = function (code, info) {
+    var el = document.createElement("div");
+    var ctx = new require$$0.Component();
+    if (dependencyCheck()) {
+      var asyncRenderer = () => {
+        try {
+          window.app.plugins.getPlugin("obsidian-charts").postprocessor(code, el, ctx);
+          ctx.load();
+          // el = ctx._children[0].containerEl;
+        } catch (error) {
+          el.innerText = "Failed to render Chart: " + error;
+        }
+      };
+    } else {
+      el.innerText = "Error: Unable to find the Obsidian Charts plugin";
+    }
+    // charts have an element detach listener that causes charts to disappear when they leave
+    // the codemirror viewport. this redraw function forces them to redraw once they're back
+    // in the visible viewport
+    info.redraw = function () {
+      try {
+        ctx._children[0].chart.attached = true;
+        ctx._children[0].chart.resize();
+      } catch {}
+    };
+    function unload() {
+      ctx._children[0].unload();
+      ctx.unload();
+      ctx._children[0] = null;
+      ctx._children = null;
+    }
+    info.unload = unload;
+    return {
+      element: el,
+      asyncRenderer: asyncRenderer,
+    };
+  };
+  exports.ChartRenderer = ChartRenderer;
+  {
+    CodeMirror.defineOption("chart", null, function (cm) {
+      fold_code_1.getAddon(cm).clear("chart");
+      fold_1.getAddon(cm).startFold();
+    });
+    fold_code_1.registerRenderer({
+      name: "chart",
+      pattern: /^chart$/i,
+      renderer: exports.ChartRenderer,
+      suggested: true,
+    });
+  }
+});
+
+// HyperMD, copyright (c) by laobubu
+// Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
+//
+// POWERPACK for "addon/fold-code"
+//
+// This module provides `QueryRenderer` for FoldCode addon
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.FoldCode);
+})(function (require, exports, CodeMirror, fold_1, fold_code_1) {
+  var dependencyCheck = function () {
+    return window.app.internalPlugins.getPluginById("global-search")?._loaded;
+  };
+  const purifySettings = {
+    ALLOW_UNKNOWN_PROTOCOLS: true,
+    IN_PLACE: true,
+    // RETURN_DOM_FRAGMENT: true,
+    // RETURN_DOM_IMPORT: true,
+    FORBID_TAGS: ["style"],
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["frameborder", "allowfullscreen", "allow", "aria-label-position"],
+  };
+  var QueryRenderer = function (code, info) {
+    // Welcome to the very hacky query renderer code
+    // Here we pretend to be a preview mode section and steal the rendered element
+    var queryEl = document.createElement("div");
+    if (dependencyCheck()) {
+      var promises = [];
+      const previewMode = window.app.workspace.activeLeaf.view.previewMode,
+        renderer = previewMode.renderer;
+      queryEl.innerHTML = `<pre><code class="language-query">${code}</code></pre>`;
+      // Sanitize the HTML to make sure there's no funny business
+      window.DOMPurify.sanitize(queryEl, purifySettings);
+      renderer.owner.postProcess({ el: queryEl }, promises, renderer.frontmatter);
+      var targetChild;
+      Array.from(renderer.owner._children).forEach(child => {
+        if (child.containerEl === queryEl.firstChild) {
+          targetChild = child;
+        }
+      });
+      // But wait... we have to clean up after ourselves so that we don't cause a memory leak
+      // We do so by removing the node we just created from the preview mode's child list
+      function unload() {
+        previewMode.removeChild(targetChild);
+        renderer.owner._children.remove(targetChild);
+        targetChild.unload();
+        targetChild = null;
+      }
+      info.unload = unload;
+      // we naively wait here because search query results are async
+      // if we clean up too fast, we don't get results
+    } else {
+      queryEl.innerText = "Error: Unable to find the Global Search plugin";
+    }
+    return {
+      element: queryEl,
+      asyncRenderer: null,
+    };
+  };
+  exports.QueryRenderer = QueryRenderer;
+
+  CodeMirror.defineOption("query", null, function (cm) {
+    fold_code_1.getAddon(cm).clear("query");
+    fold_1.getAddon(cm).startFold();
+  });
+  fold_code_1.registerRenderer({
+    name: "query",
+    pattern: /^query$/i,
+    renderer: exports.QueryRenderer,
+    suggested: false,
+  });
+});
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.FoldCode);
+})(function (require, exports, CodeMirror, fold_1, fold_code_1) {
+  var dependencyCheck = function () {
+    const plugin = window.app.plugins.getPlugin("dataview");
+    return plugin?._loaded && gte_1(plugin?.manifest.version, "0.4.17") ? true : false;
+  };
+  var DataviewRenderer = function (code, info) {
+    var el = document.createElement("div");
+    var ctx = new require$$0.Component();
+    ctx.sourcePath = info.editor.state.fileName;
+    if (dependencyCheck()) {
+      if (info.lang === "dataview") {
+        window.app.plugins.getPlugin("dataview").dataview(code, el, ctx, ctx.sourcePath);
+      } else if (info.lang === "dataviewjs") {
+        window.app.plugins.getPlugin("dataview").dataviewjs(code, el, ctx, ctx.sourcePath);
+      }
+      ctx.load();
+      el = ctx._children[0].containerEl;
+      function unload() {
+        ctx._children[0].unload();
+        ctx.unload();
+        ctx._children[0] = null;
+        ctx._children = null;
+      }
+      info.unload = unload;
+      return {
+        element: el,
+        asyncRenderer: null,
+      };
+    } else {
+      el.innerText = "Error: Unable to find the Dataview plugin or version not 0.4.17 or greater";
+    }
+
+    return {
+      element: el,
+      asyncRenderer: null,
+    };
+  };
+  exports.DataviewRenderer = DataviewRenderer;
+  CodeMirror.defineOption("dataview", null, function (cm) {
+    fold_code_1.getAddon(cm).clear("dataview");
+    fold_1.getAddon(cm).startFold();
+  });
+  fold_code_1.registerRenderer({
+    name: "dataview",
+    pattern: /^dataview(js)?$/i,
+    renderer: exports.DataviewRenderer,
+    suggested: false,
+  });
+});
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.FoldCode);
+})(function (require, exports, CodeMirror, fold_1, fold_code_1) {
+  var dependencyCheck = function () {
+    const plugin = window.app.plugins.getPlugin("obsidian-tasks-plugin");
+    return plugin?._loaded && gte_1(plugin?.manifest.version, "1.4.0") ? true : false;
+  };
+  var TasksRenderer = function (code, info) {
+    var el = document.createElement("div");
+    var ctx = new require$$0.Component();
+    ctx.sourcePath = info.editor.filePath;
+    if (dependencyCheck()) {
+      const renderer = window.app.plugins.getPlugin("obsidian-tasks-plugin").queryRenderer.addQueryRenderChild;
+      renderer(code, el, ctx);
+      ctx.load();
+      el = ctx._children[0].containerEl;
+      function unload() {
+        ctx._children[0].unload();
+        ctx.unload();
+        ctx._children[0] = null;
+        ctx._children = null;
+      }
+      info.unload = unload;
+      return {
+        element: el,
+        asyncRenderer: null,
+      };
+    } else {
+      el.innerText = "Error: Unable to find the Tasks plugin or version not 1.4.0 or greater";
+    }
+
+    return {
+      element: el,
+      asyncRenderer: null,
+    };
+  };
+  exports.TasksRenderer = TasksRenderer;
+  CodeMirror.defineOption("tasks", null, function (cm) {
+    fold_code_1.getAddon(cm).clear("tasks");
+    fold_1.getAddon(cm).startFold();
+  });
+  fold_code_1.registerRenderer({
+    name: "tasks",
+    pattern: /^tasks$/i,
+    renderer: exports.TasksRenderer,
+    suggested: false,
+  });
+});
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, {}, CodeMirror, HyperMD.Fold, HyperMD.ReadLink);
+})(function (require, exports, CodeMirror, fold_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.EmbedFolder = void 0;
+  var debug = false;
+  var EmbedFolder = function (stream, token) {
+    var cm = stream.cm;
+    var embedRE = /(\bformatting-embed\b)/;
+    var extRE = /\.(jpe?g|png|gif|svg|bmp)/;
+    var urlRE = /(\bformatting-link-string\b)|(\bformatting-link\b)/; // matches the parentheses
+    if (embedRE.test(token.type) && (token.string === "!" || token.string === "![[")) {
+      var replacedWith;
+      var lineNo = stream.lineNo;
+      // find the begin and end of url part
+      var since = { line: lineNo, ch: token.start };
+      var url_begin = stream.findNext(urlRE, 0, since);
+      if (!url_begin) {
+        return null;
+      }
+      var url_end = stream.findNext(urlRE, url_begin.i_token + 1);
+      var rawurl = cm.getRange({ line: lineNo, ch: url_begin.token.end }, { line: lineNo, ch: url_end.token.start });
+      // bail if the embed is an image
+      if (extRE.test(rawurl)) return null;
+      var from = { line: lineNo, ch: token.start };
+      var to = { line: lineNo, ch: url_end.token.end };
+      var inlineMode = from.ch != 0 || to.ch < cm.getLine(to.line).length;
+      var rngReq = stream.requestRange(from, to, from, from);
+      var stubClassOmittable = "hmd-fold-embed-stub omittable";
+      if (rngReq === fold_1.RequestRangeResult.OK) {
+        var info = {
+          editor: cm,
+          lang: "embed",
+          attributes: null,
+          marker: null,
+          lineWidget: null,
+          el: null,
+          break: undefined_function,
+          changed: undefined_function,
+        };
+        var breakFn = function () {
+          return fold_1.breakMark(cm, marker);
+        };
+        // Renderer
+        var code = cm.getRange(from, to);
+        var el = document.createElement("div");
+        var ctx = new require$$0.Component();
+        ctx.sourcePath = cm.state.fileName;
+        const previewMode = window.app.workspace.activeLeaf.view.previewMode,
+          renderer = previewMode.renderer;
+        try {
+          // process the markdown
+          require$$0.MarkdownRenderer.renderMarkdown(code, el, cm.state.fileName, ctx);
+          // kick off the preview mode process that renders the embed
+          renderer.owner.postProcess({ el: el }, [], renderer.frontmatter);
+          var targetChild;
+          Array.from(renderer.owner._children).forEach(child => {
+            if (child.containerEl === el.querySelector(".markdown-embed-content")) {
+              targetChild = child;
+            }
+          });
+        } catch (error) {
+          el.innerText = "Failed to render embed: " + error;
+        }
+        function unload() {
+          previewMode.removeChild(targetChild);
+          renderer.owner._children.remove(targetChild);
+          targetChild.unload();
+          targetChild = null;
+        }
+        info.unload = unload;
+        var type = "embed";
+        var stub = document.createElement("span");
+        stub.className = stubClass;
+        stub.textContent = "<EMBED>";
+        stub.addEventListener("click", breakFn, false);
+        var marker, lineWidget;
+        function updateWidgetByEl(targetEl) {
+          const found = cm.hmd.Fold.folded.embed?.filter(
+            el => el.replacedWith?.contains(targetEl) || el.associatedLineWidget?.node?.contains(targetEl)
+          );
+          if (found?.length) {
+            found[0].changed();
+          }
+        }
+        var updateWidgetByElDebounced = require$$0.debounce(updateWidgetByEl, 250);
+        function watchInlineSize(w, h, el) {
+          try {
+            if (debug) ;
+            updateWidgetByElDebounced(el);
+          } catch (err) {
+          }
+        }
+
+        const embedObserverCallback = entries => {
+          for (let entry of entries) {
+            if (entry.contentRect) {
+              var width = entry.contentRect.width,
+                height = entry.contentRect.height;
+              try {
+                watchInlineSize(width, height, entry.target);
+              } catch (err) {
+              }
+              entry = null;
+            }
+          }
+        };
+
+        if (!cm.embedObserver) {
+          cm.embedObserver = new ResizeObserver(embedObserverCallback);
+        }
+
+        if (inlineMode) {
+          stub.className = stubClassOmittable;
+
+          var displayType, embedType;
+          var span = document.createElement("span");
+          if (code.contains("^")) {
+            displayType = "inline";
+            embedType = "block";
+          } else if (code.contains("#")) {
+            displayType = "flex";
+            embedType = "header";
+          } else {
+            displayType = "flex";
+            embedType = "page";
+          }
+          span.setAttribute("class", "rendered-inline-embed rendered-widget embed-type-" + embedType);
+          span.setAttribute("style", `display: ${displayType};`);
+          if (token.start < 7) {
+            stub.addClass("flip-stub");
+          }
+          span.appendChild(stub);
+          span.appendChild(el);
+          var targetFile = rawurl.match(/^([^#]*)#/);
+          if (targetFile && targetFile.length > 1 && targetFile[1]) {
+            targetFile = targetFile[1];
+          } else {
+            targetFile = cm.state.fileName?.replace(/\.md$/, "");
+          }
+          span.setAttribute("aria-label", targetFile);
+          el.onClickEvent = function (e, t) {
+            this.addEventListener("click", e, t), this.addEventListener("auxclick", e, t);
+          };
+          el.onClickEvent(function (e) {
+            if (e.composedPath()[0].className === "internal-link") return;
+            (0 !== e.button && 1 !== e.button) ||
+              (e.preventDefault(), window.app.workspace.openLinkText(rawurl, cm.state.fileName, false));
+          });
+
+          replacedWith = span;
+
+          cm.embedObserver.observe(span);
+          info.changed = function () {
+            try {
+              marker.changed();
+            } catch (err) {
+            }
+          };
+          info.break = function () {
+            fold_1.breakMark(cm, marker);
+          };
+          function onInlineMarkClear() {
+            cm.embedObserver.unobserve(span);
+            if (info.unload) {
+              try {
+                info.unload();
+                if (debug) ;
+              } catch (err) {
+              }
+            }
+            // var markers = cm.hmd.Fold.folded.embed;
+            // var idx;
+            // if (markers && (idx = markers.indexOf(marker)) !== -1) {
+            //   if (debug) console.log("found inline marker in registry", markers, marker);
+            //   markers.splice(idx, 1);
+            // } else {
+            //   if (debug) console.log("unable to find inline wiget in fold registry", markers, marker);
+            // }
+            marker.off("clear", onInlineMarkClear);
+            stub.removeEventListener("click", breakFn);
+            el.removeEventListener("click", breakFn);
+            stub = null;
+            el = null;
+            marker.replacedWith = null;
+            marker.widgetNode = null;
+            marker = null;
+            info = null;
+          }
+
+          setTimeout(function () {
+            marker.on("clear", onInlineMarkClear);
+          }, 100);
+        } else {
+          // Block Placement
+          var $wrapper = document.createElement("div");
+          $wrapper.className = contentClass;
+          $wrapper.style.minHeight = "1em";
+          $wrapper.appendChild(el);
+          if (code.contains("^")) {
+            displayType = "inline";
+            embedType = "block";
+          } else if (code.contains("#")) {
+            displayType = "flex";
+            embedType = "header";
+          } else {
+            displayType = "flex";
+            embedType = "page";
+          }
+          $wrapper.setAttribute("class", "rendered-embed rendered-widget embed-type-" + embedType);
+          if (!cm.getLineHandle(lineNo).widgets || cm.getLineHandle(lineNo).widgets?.length === 0) {
+            lineWidget = cm.addLineWidget(to.line, $wrapper, {
+              above: false,
+              coverGutter: false,
+              handleMouseEvents: false,
+              className: "rendered-block-embed rendered-widget",
+              noHScroll: false,
+              showIfHidden: false,
+            });
+          } else if (cm.getLineHandle(lineNo).widgets?.length) {
+            lineWidget = cm.getLineHandle(lineNo).widgets[0];
+          } else {
+            return;
+          }
+
+          var wrapperLine = stream.lineNo;
+          cm.addLineClass(wrapperLine, "wrap", `rendered-${type}-wrapper`);
+
+          cm.embedObserver.observe($wrapper);
+
+          replacedWith = stub;
+
+          info.changed = function () {
+            try {
+              lineWidget.changed();
+            } catch (err) {
+            }
+          };
+          info.break = function () {
+            cm.embedObserver.unobserve($wrapper);
+            fold_1.breakMark(cm, marker);
+          };
+          stub.addEventListener("click", info.break, false);
+          var redraw = info.redraw;
+          if (redraw) {
+            lineWidget.on("redraw", info.redraw);
+          }
+          function onCodeBlockClear() {
+            cm.embedObserver.unobserve($wrapper);
+            if (redraw) {
+              lineWidget.off("redraw", info.redraw);
+            }
+            marker.off("clear", onCodeBlockClear);
+            stub.removeEventListener("click", info.break);
+            if (info.unload) {
+              try {
+                info.unload();
+                if (debug) ;
+              } catch (err) {
+              }
+            }
+            var markers = cm.hmd.Fold.folded.embed;
+            var idx;
+            if (markers && (idx = markers.indexOf(marker)) !== -1) {
+              markers.splice(idx, 1);
+            }
+            cm.removeLineClass(wrapperLine, "wrap", `rendered-${type}-wrapper`);
+            cm.removeLineClass(wrapperLine, "wrap", "rendered-code-block-wrapper");
+            lineWidget.clear();
+            lineWidget = null;
+            marker.replacedWith = null;
+            marker.widgetNode = null;
+            marker = null;
+            info.unload = null;
+            info = null;
+          }
+          setTimeout(function () {
+            marker.on("clear", onCodeBlockClear);
+          }, 0);
+        }
+        marker = cm.markText(from, to, {
+          replacedWith: replacedWith,
+          inclusiveLeft: false,
+          inclusiveRight: false,
+        });
+        marker.associatedLineWidget = lineWidget;
+        setTimeout(() => {
+          marker.changed();
+        }, 0);
+        return marker;
+      }
+    }
+    return null;
+  };
+  var contentClass = "hmd-fold-embed-content hmd-fold-embed"; // + renderer_type
+  var stubClass = "hmd-fold-embed-stub hmd-fold-embed"; // + renderer_type
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  var undefined_function = function () {};
+  exports.EmbedFolder = EmbedFolder;
+  fold_1.registerFolder("embed", exports.EmbedFolder, true);
+});
+
+var lib = createCommonjsModule(function (module, exports) {
+/*
+THIS IS A GENERATED/BUNDLED FILE BY ESBUILD
+if you want to view the source visit the plugins github repository
+*/
+
+var t=Object.create;var o=Object.defineProperty;var a=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var d=Object.getPrototypeOf,l=Object.prototype.hasOwnProperty;var r=n=>o(n,"__esModule",{value:!0});var g=(n,e)=>{r(n);for(var i in e)o(n,i,{get:e[i],enumerable:!0});},c=(n,e,i)=>{if(e&&typeof e=="object"||typeof e=="function")for(let s of p(e))!l.call(n,s)&&s!=="default"&&o(n,s,{get:()=>e[s],enumerable:!(i=a(e,s))||i.enumerable});return n},u=n=>c(r(o(n!=null?t(d(n)):{},"default",n&&n.__esModule&&"default"in n?{get:()=>n.default,enumerable:!0}:{value:n,enumerable:!0})),n);g(exports,{getApi:()=>P,isPluginEnabled:()=>f});u(require$$0__default["default"]);var P=n=>{var e;return n?(e=n.app.plugins.plugins["obsidian-icon-shortcodes"])==null?void 0:e.api:window.IconSCAPIv0},f=n=>n.app.plugins.enabledPlugins.has("obsidian-icon-shortcodes");
 });
 
 createCommonjsModule(function (module) {
 // HyperMD, copyright (c) by laobubu
 // Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
 //
+// DESCRIPTION: Fold and render emoji :smile:
+//
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getApi } = lib;
+(function (mod) {
+  //[HyperMD] UMD patched!
+  /*plain env*/ mod(
+    null,
+    (HyperMD.FoldEmoji = HyperMD.FoldEmoji || {}),
+    CodeMirror,
+    HyperMD,
+    HyperMD.Fold
+  );
+})(function (require, exports, CodeMirror, core_1, fold_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.defaultDict =
+    exports.defaultChecker =
+    exports.defaultRenderer =
+    exports.suggestedOption =
+    exports.EmojiFolder =
+    exports.getAddon =
+    exports.defaultOption =
+    exports.FoldEmoji =
+      void 0;
+  /********************************************************************************** */
+  //#region Folder
+  /**
+   * Detect if a token is emoji and fold it
+   *
+   * @see FolderFunc in ./fold.ts
+   */
+  const EmojiPattern = /\+1|-1|[\w-]+/,
+    AllowedChar = /^[\w-+]+$/;
+
+  exports.EmojiFolder = function (stream, token) {
+    if (token.string !== ":") return;
+    const nextColon = stream.findNext((t) => t.string === ":", false),
+      nextToken = stream.findNext(() => true);
+
+    // if nearest colon is next token, it's not an emoji
+    if (!nextToken || !nextColon || nextColon.i_token <= nextToken.i_token)
+      return;
+
+    const tokenType = token.type;
+    let name = "";
+    for (let i = stream.i_token + 1; i < nextColon.i_token; i++) {
+      const t = stream.lineTokens[i];
+      // if type of warpped tokens not the same as leading colon,
+      // it's not an emoji
+      if (t.type !== tokenType || !AllowedChar.test(t.string)) return;
+      name += t.string;
+    }
+    // filter text that is too long to be shortcode
+    if (name.length > 55) return;
+    // filter using common shortcode pattern
+    if (!EmojiPattern.test(name)) return;
+
+    var cm = stream.cm;
+    var addon = exports.getAddon(cm);
+    if (!addon.isEmoji(name)) return null;
+
+    var from = {
+      line: stream.lineNo,
+      ch: token.start,
+    };
+    var end = nextColon.token.end;
+    var to = { line: stream.lineNo, ch: end };
+
+    var reqAns = stream.requestRange(from, to);
+    if (reqAns !== fold_1.RequestRangeResult.OK) return null;
+    // now we are ready to fold and render!
+    var marker = addon.foldEmoji(name, from, to);
+    return marker;
+  };
+  //#endregion
+  fold_1.registerFolder("emoji", exports.EmojiFolder, true);
+  exports.defaultRenderer = (text) => {
+    const icon = getApi()?.getIcon(text);
+    if (!icon) {
+      return null;
+    } else if (typeof icon === "string") {
+      return createSpan({ text: icon });
+    } else {
+      return icon;
+    }
+  };
+  exports.defaultChecker = (text) => getApi()?.hasIcon(text) === true;
+  exports.defaultOption = {
+    myEmoji: {},
+    emojiRenderer: exports.defaultRenderer,
+    emojiChecker: exports.defaultChecker,
+  };
+  exports.suggestedOption = {};
+  core_1.suggestedEditorConfig.hmdFoldEmoji = exports.suggestedOption;
+  CodeMirror.defineOption(
+    "hmdFoldEmoji",
+    exports.defaultOption,
+    function (cm, newVal) {
+      ///// convert newVal's type to `Partial<Options>`, if it is not.
+      if (!newVal) {
+        newVal = {};
+      }
+      ///// apply config and write new values into cm
+      var inst = exports.getAddon(cm);
+      for (var k in exports.defaultOption) {
+        inst[k] = k in newVal ? newVal[k] : exports.defaultOption[k];
+      }
+    }
+  );
+  //#endregion
+  /********************************************************************************** */
+  //#region Addon Class
+  var FoldEmoji = /** @class */ (function (str) {
+    function FoldEmoji(cm) {
+      this.cm = cm;
+      // options will be initialized to defaultOption when constructor is finished
+    }
+    FoldEmoji.prototype.isEmoji = function (text) {
+      return text in this.myEmoji || this.emojiChecker(text);
+    };
+    FoldEmoji.prototype.foldEmoji = function (text, from, to) {
+      var cm = this.cm;
+      var el =
+        (text in this.myEmoji && this.myEmoji[text](text)) ||
+        this.emojiRenderer(text);
+      if (!el || !el.tagName) return null;
+      if (el.className.indexOf("hmd-emoji") === -1)
+        el.className += " hmd-emoji";
+      var marker = cm.markText(from, to, {
+        replacedWith: el,
+      });
+      el.addEventListener(
+        "click",
+        fold_1.breakMark.bind(this, cm, marker, 1),
+        false
+      );
+      if (el.tagName.toLowerCase() === "img") {
+        el.addEventListener(
+          "load",
+          function () {
+            return marker.changed();
+          },
+          false
+        );
+        el.addEventListener(
+          "dragstart",
+          function (ev) {
+            return ev.preventDefault();
+          },
+          false
+        );
+      }
+      return marker;
+    };
+    return FoldEmoji;
+  })();
+  exports.FoldEmoji = FoldEmoji;
+  //#endregion
+  /** ADDON GETTER (Singleton Pattern): a editor can have only one FoldEmoji instance */
+  exports.getAddon = core_1.Addon.Getter(
+    "FoldEmoji",
+    FoldEmoji,
+    exports.defaultOption /** if has options */
+  );
+});
+//#endregion
+});
+
+// HyperMD, copyright (c) by laobubu
+
+(function (mod) {
+  mod(null, (HyperMD.FoldMath = HyperMD.FoldMath || {}), CodeMirror, HyperMD, HyperMD.Fold);
+})(function (require, exports, CodeMirror, core_1, fold_1) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.getAddon =
+    exports.FoldMath =
+    exports.suggestedOption =
+    exports.defaultOption =
+    // exports.DumbRenderer =
+    exports.insertMathMark =
+    exports.MathFolder =
+      void 0;
+  /********************************************************************************** */
+  //#region Exports
+  /**
+   * Detect if a token is a beginning of Math, and fold it!
+   *
+   * @see FolderFunc in ./fold.ts
+   */
+  var MathFolder = function (stream, token) {
+    var mathBeginRE = /formatting-math-begin\b/;
+    if (!mathBeginRE.test(token.type)) return null;
+    var cm = stream.cm;
+    var line = stream.lineNo;
+    var maySpanLines = /math-block\b/.test(token.type); // $$ may span lines!
+    var tokenLength = maySpanLines ? 2 : 1; // "$$" or "$"
+    // CodeMirror GFM mode split "$$" into two tokens, so do a extra check.
+    if (tokenLength == 2 && token.string.length == 1) {
+      var nextToken = stream.lineTokens[stream.i_token + 1];
+      if (!nextToken || !mathBeginRE.test(nextToken.type)) return null;
+    }
+    // Find the position of the "$" tail and compose a range
+    var end_info = stream.findNext(/formatting-math-end\b/, maySpanLines);
+    var from = { line: line, ch: token.start };
+    var to;
+    var noEndingToken = false;
+    if (end_info) {
+      to = { line: end_info.lineNo, ch: end_info.token.start + tokenLength };
+    } else if (maySpanLines) {
+      // end not found, but this is a multi-line math block.
+      // fold to the end of doc
+      var lastLineNo = cm.lastLine();
+      to = { line: lastLineNo, ch: cm.getLine(lastLineNo).length };
+      noEndingToken = true;
+    } else {
+      // Hmm... corrupted math ?
+      return null;
+    }
+    // Range is ready. request the range
+    var expr_from = { line: from.line, ch: from.ch + tokenLength };
+    var expr_to = {
+      line: to.line,
+      ch: to.ch - (noEndingToken ? 0 : tokenLength),
+    };
+    var expr = cm.getRange(expr_from, expr_to).trim();
+    var foldMathAddon = exports.getAddon(cm);
+    var reqAns = stream.requestRange(from, to);
+    if (reqAns !== fold_1.RequestRangeResult.OK) {
+      if (reqAns === fold_1.RequestRangeResult.CURSOR_INSIDE) foldMathAddon.editingExpr = expr; // try to trig preview event
+      return null;
+    }
+    // Now let's make a math widget!
+    var isDisplayMode = tokenLength > 1; // && from.ch == 0 && (noEndingToken || to.ch >= cm.getLine(to.line).length);
+    var marker = insertMathMark(cm, from, to, expr, tokenLength, isDisplayMode);
+    foldMathAddon.editingExpr = null; // try to hide preview
+    return marker;
+  };
+  exports.MathFolder = MathFolder;
+  /**
+   * Insert a TextMarker, and try to render it with configured MathRenderer.
+   */
+  function insertMathMark(cm, p1, p2, expression, tokenLength, isDisplayMode) {
+    var span = document.createElement("span");
+    span.setAttribute("class", "hmd-fold-math math-" + (isDisplayMode ? 2 : 1));
+    span.setAttribute("title", expression);
+    var mathPlaceholder = document.createElement("span");
+    mathPlaceholder.setAttribute("class", "hmd-fold-math-placeholder");
+    mathPlaceholder.textContent = expression;
+    span.appendChild(mathPlaceholder);
+    var marker = cm.markText(p1, p2, {
+      replacedWith: span,
+    });
+    span.addEventListener(
+      "click",
+      function () {
+        return fold_1.breakMark(cm, marker, tokenLength);
+      },
+      false
+    );
+    var foldMathAddon = exports.getAddon(cm);
+    var mathRenderer = foldMathAddon.createRenderer(span, isDisplayMode ? "display" : "");
+    mathRenderer.onChanged = function () {
+      //   if (mathPlaceholder) {
+      //     span.removeChild(mathPlaceholder);
+      //     mathPlaceholder = null;
+      //   }
+      marker.changed();
+    };
+    marker.on("clear", function () {
+      mathRenderer.clear();
+    });
+    marker["mathRenderer"] = mathRenderer;
+    core_1.tryToRun(
+      function () {
+        if (!mathRenderer.isReady()) return false;
+        mathRenderer.startRender(expression);
+        return true;
+      },
+      5,
+      function () {
+        // if failed 5 times...
+        marker.clear();
+      }
+    );
+    return marker;
+  }
+  exports.insertMathMark = insertMathMark;
+  //#endregion
+  fold_1.registerFolder("math", exports.MathFolder, true);
+  /********************************************************************************** */
+  //#region Mathjax Renderer
+  var MathjaxRenderer = /** @class */ (function () {
+    function MathjaxRenderer(container, mode) {
+      this.container = container;
+      this.container.empty();
+      this.isDisplay = mode === "display";
+      var elClass = "hmd-math-mathjax";
+      if (mode) elClass += " hmd-math-mathjax-" + mode;
+      var errorEl = (this.errorEl = document.createElement("span"));
+      errorEl.setAttribute("style", "white-space: pre-wrap; font-size: 90%; border: 1px solid #900; color: #C00");
+      var el = (this.el = document.createElement("span"));
+      el.className = elClass;
+      container.appendChild(el);
+    }
+    MathjaxRenderer.prototype.dependencyCheck = function () {
+      return gte_1(electron.ipcRenderer.sendSync("version"), "0.12.16") ? true : false;
+    };
+    MathjaxRenderer.prototype.startRender = function (expr) {
+      var el = this.el,
+        errorEl = this.errorEl;
+      try {
+        if (!this.dependencyCheck()) {
+          el.innerHTML = '<span class="mod-warning">Obsidian v0.12.16+ is needed to render Mathjax</span>';
+        } else {
+          el.innerHTML =  require$$0.renderMath(expr, this.isDisplay).outerHTML;
+          require$$0.finishRenderMath();
+          // this.container.appendChild(this.el);
+        }
+      } catch (err) {
+        // failed to render!
+        errorEl.textContent = err && err.message;
+        if (errorEl.parentElement !== el) {
+          el.textContent = "";
+          el.appendChild(errorEl);
+          el.className += " hmd-math-mathjax-error";
+        }
+      }
+      var onChanged = this.onChanged;
+      if (onChanged) setTimeout(onChanged.bind(this, expr), 0);
+    };
+    MathjaxRenderer.prototype.clear = function () {
+      this.container.removeChild(this.el);
+    };
+    /** indicate that if the Renderer is ready to execute */
+    MathjaxRenderer.prototype.isReady = function () {
+      return true; // I'm always ready!
+    };
+    return MathjaxRenderer;
+  })();
+  //   exports.DumbRenderer = DumbRenderer;
+  exports.defaultOption = {
+    renderer: MathjaxRenderer,
+    onPreview: null,
+    onPreviewEnd: null,
+  };
+  exports.suggestedOption = {};
+  core_1.suggestedEditorConfig.hmdFoldMath = exports.suggestedOption;
+  CodeMirror.defineOption("hmdFoldMath", exports.defaultOption, function (cm, newVal) {
+    ///// convert newVal's type to `Partial<Options>`, if it is not.
+    if (!newVal) {
+      newVal = {};
+    } else if (newVal === true) {
+      newVal = { renderer: MathjaxRenderer, onPreview: null, onPreviewEnd: null };
+    } else if (typeof newVal === "function") {
+      newVal = { renderer: newVal };
+    }
+    ///// apply config and write new values into cm
+    var inst = exports.getAddon(cm);
+    for (var k in exports.defaultOption) {
+      inst[k] = k in newVal ? newVal[k] : exports.defaultOption[k];
+    }
+  });
+  //#endregion
+  /********************************************************************************** */
+  //#region Addon Class
+  var FoldMath = /** @class */ (function () {
+    function FoldMath(cm) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      var _this = this;
+      this.cm = cm;
+      new core_1.FlipFlop(
+        /** CHANGED */ function (expr) {
+          _this.onPreview && _this.onPreview(expr);
+        },
+        /** HIDE    */ function () {
+          _this.onPreviewEnd && _this.onPreviewEnd();
+        },
+        null
+      ).bind(this, "editingExpr");
+    }
+    FoldMath.prototype.createRenderer = function (container, mode) {
+      var RendererClass = this.renderer || MathjaxRenderer;
+      return new RendererClass(container, mode);
+    };
+    return FoldMath;
+  })();
+  exports.FoldMath = FoldMath;
+  //#endregion
+  /** ADDON GETTER (Singleton Pattern): a editor can have only one FoldMath instance */
+  exports.getAddon = core_1.Addon.Getter("FoldMath", FoldMath, exports.defaultOption /** if has options */);
+});
+
+// HyperMD, copyright (c) by laobubu
+// Distributed under an MIT license: http://laobubu.net/HyperMD/LICENSE
+//
 // DESCRIPTION: Align Table Columns
 //
-var __createBinding =
-  (commonjsGlobal && commonjsGlobal.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (commonjsGlobal && commonjsGlobal.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, "default", { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o["default"] = v;
-      });
-var __importStar =
-  (commonjsGlobal && commonjsGlobal.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod)
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
+
 
 (function (mod) {
   mod(null, (HyperMD.TableAlign = HyperMD.TableAlign || {}), CodeMirror, HyperMD);
 })(function (require, exports, CodeMirror, core_1) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getAddon = exports.TableAlign = exports.suggestedOption = exports.defaultOption = void 0;
-  CodeMirror = __importStar(CodeMirror);
+  // CodeMirror = __importStar(CodeMirror);
   exports.defaultOption = {
     enabled: false,
   };
@@ -4316,6 +6524,7 @@ var __importStar =
         var lineSpanChildren = Array.prototype.slice.call(lineSpan.childNodes, 0);
         var eolState = cm.getStateAfter(line.lineNo());
         var columnStyles = eolState.hmdTableColumns;
+        if (!columnStyles.length) return;
         var tableID = eolState.hmdTableID;
         var columnIdx = eolState.hmdTable === 2 /* NORMAL */ ? -1 : 0;
         var columnSpan = _this.makeColumn(columnIdx, columnStyles[columnIdx] || "dummy", tableID);
@@ -4408,27 +6617,281 @@ var __importStar =
   /** ADDON GETTER (Singleton Pattern): a editor can have only one TableAlign instance */
   exports.getAddon = core_1.Addon.Getter("TableAlign", TableAlign, exports.defaultOption);
 });
-});
 
-var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
-    __extends(ObsidianCodeMirrorOptionsPlugin, _super);
-    function ObsidianCodeMirrorOptionsPlugin() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.mdProcessor = function (el) { return __awaiter(_this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                setTimeout(function () {
-                    _this.injectCM(el);
-                }, 100);
-                return [2 /*return*/];
+function onRenderLine(cm, line, el) {
+    const parentElement = el.parentElement;
+    if (!parentElement)
+        el.addEventListener("DOMNodeInserted", (event) => procLine(cm, line, el, event.relatedNode, this), { once: true });
+}
+function procLine(cm, line, el, parentEl, plugin) {
+    var _a, _b, _c, _d, _e;
+    // for some reason, codemirror or hmd skips putting elements in a wrapping div
+    // unsure what causes this to happen but try and account for it by falling back
+    // if the parent is the root codemirror-code element
+    if (parentEl.className === "CodeMirror-code")
+        parentEl = el;
+    // clear existing data keys
+    clearDataKeys(parentEl.dataset);
+    // split child classes
+    const childClasses = (_b = (_a = line.styleClasses) === null || _a === void 0 ? void 0 : _a.textClass) === null || _b === void 0 ? void 0 : _b.split(" ");
+    // line.styles is an array of multi-class strings
+    // we combine all of the styles into a single string and then dedupe it
+    const childElementClasses = (_c = line.styles) === null || _c === void 0 ? void 0 : _c.filter((style) => typeof style === "string").join(" ").split(" ").filter((v, i, a) => a.indexOf(v) === i);
+    // raise yaml frontmatter attributes up as CSS vars and attrs
+    if (childElementClasses.contains("hmd-frontmatter") && line.text !== "---") {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const display = cm.display;
+        const viewEl = (_e = (_d = display === null || display === void 0 ? void 0 : display.wrapper) === null || _d === void 0 ? void 0 : _d.parentElement) === null || _e === void 0 ? void 0 : _e.parentElement;
+        const approvedAttrs = plugin.settings.allowedYamlKeys.split(",").map(item => item.trim());
+        if (plugin.settings.renderBanner) {
+            approvedAttrs.push("banner_x", "banner_y", "banner", "banner-height", "banner-style");
+        }
+        // try and parse the frontmatter into yaml key/value pairs
+        let kv;
+        try {
+            const parsedYaml = require$$0.parseYaml(line.text);
+            kv = Object.entries(parsedYaml).map(([key, value]) => ({ key, value }));
+        }
+        catch (_f) {
+            kv = [];
+        }
+        kv.forEach(item => {
+            // if the key is not registered, skip
+            if (!approvedAttrs.includes(item.key))
+                return;
+            // if the value looks like a file, try and resolve the full path
+            if (/\.(jpg|jpeg|md|png|gif)$/.test(item.value)) {
+                let file, filePath;
+                try {
+                    (file = plugin.app.metadataCache.getFirstLinkpathDest(decodeURIComponent(item.value), "")) &&
+                        (filePath = plugin.app.vault.getResourcePath(file));
+                }
+                catch (_a) { }
+                if (file && filePath) {
+                    viewEl.style.setProperty(`--${item.key}`, `url(${filePath})`);
+                }
+                else {
+                    viewEl.style.setProperty(`--${item.key}`, `${item.value}`);
+                }
+            }
+            else {
+                // special handling for the banner plugin to turn decimals into percents
+                if (/^banner_[xy]$/.test(item.key)) {
+                    item.value = `${item.value * 100}%`;
+                }
+                viewEl.style.setProperty(`--${item.key}`, `${item.value}`);
+            }
+            try {
+                viewEl.setAttribute(`data-${item.key}`, item.value);
+            }
+            catch (_b) { }
+        });
+    }
+    // look for anything labeled as a header
+    // extract its full text value (minus the initial hash)
+    if (childClasses === null || childClasses === void 0 ? void 0 : childClasses.includes("HyperMD-header")) {
+        const _match = line.text.match(/^[#]+[\s]+(.+)/);
+        parentEl.dataset["heading"] = (_match === null || _match === void 0 ? void 0 : _match.length) > 0 ? line.text.match(/^[#]+[\s]+(.+)/)[1].trim() : "";
+    }
+    // check line for any hashtags and add them to a new data key
+    const tokens = cm.getLineTokens(line.lineNo());
+    const parsedTokens = parseLineTokens(tokens);
+    if (parsedTokens)
+        parentEl.dataset["hashtags"] = parseLineTokens(tokens);
+    // infer html tag type based on style classes
+    const htmlTag = childElementClasses ? lookupTag(childElementClasses) : null;
+    if (htmlTag) {
+        parentEl.dataset["tagName"] = htmlTag;
+    }
+}
+function clearDataKeys(keys) {
+    if (keys) {
+        Object.keys(keys).forEach(dataKey => {
+            delete keys[dataKey];
+        });
+    }
+}
+function parseLineTokens(tokens) {
+    tokens = tokens.filter((token) => { var _a; return (_a = token.type) === null || _a === void 0 ? void 0 : _a.includes("hashtag-end"); });
+    if (tokens.length) {
+        const hashtags = tokens.map((token) => token.string).join(" ");
+        if (hashtags.length) {
+            return tokens.map((token) => token.string).join(" ");
+        }
+    }
+}
+function lookupTag(classes) {
+    let htmlTag;
+    for (const className of classes) {
+        switch (className) {
+            case "formatting-list-ol":
+                htmlTag = "ol";
+                break;
+            case "formatting-list-ul":
+                htmlTag = "ul";
+                break;
+            case "header-1":
+                htmlTag = "h1";
+                break;
+            case "header-2":
+                htmlTag = "h2";
+                break;
+            case "header-3":
+                htmlTag = "h3";
+                break;
+            case "header-4":
+                htmlTag = "h4";
+                break;
+            case "header-5":
+                htmlTag = "h5";
+                break;
+            case "header-6":
+                htmlTag = "h6";
+                break;
+            case "hmd-codeblock":
+                htmlTag = "code";
+                break;
+            case "hr":
+                htmlTag = "hr";
+                break;
+            case "hmd-frontmatter":
+                htmlTag = "frontmatter";
+                break;
+        }
+    }
+    return htmlTag;
+}
+
+function around(obj, factories) {
+    const removers = Object.keys(factories).map(key => around1(obj, key, factories[key]));
+    return removers.length === 1 ? removers[0] : function () { removers.forEach(r => r()); };
+}
+function around1(obj, method, createWrapper) {
+    const original = obj[method], hadOwn = obj.hasOwnProperty(method);
+    let current = createWrapper(original);
+    // Let our wrapper inherit static props from the wrapping method,
+    // and the wrapping method, props from the original method
+    if (original)
+        Object.setPrototypeOf(current, original);
+    Object.setPrototypeOf(wrapper, current);
+    obj[method] = wrapper;
+    // Return a callback to allow safe removal
+    return remove;
+    function wrapper(...args) {
+        // If we have been deactivated and are no longer wrapped, remove ourselves
+        if (current === original && obj[method] === wrapper)
+            remove();
+        return current.apply(this, args);
+    }
+    function remove() {
+        // If no other patches, just do a direct removal
+        if (obj[method] === wrapper) {
+            if (hadOwn)
+                obj[method] = original;
+            else
+                delete obj[method];
+        }
+        if (current === original)
+            return;
+        // Else pass future calls through, and remove wrapper from the prototype chain
+        current = original;
+        Object.setPrototypeOf(wrapper, original || Function);
+    }
+}
+
+class ObsidianCodeMirrorOptionsPlugin extends require$$0.Plugin {
+    constructor() {
+        super(...arguments);
+        this.onImageContextMenu = (event, target) => {
+            // the "editor-menu" event does not include the MouseEvent or the target HTMLElement
+            // so instead, we create this stanadard context menu event handler and hook it into
+            // the "editor-menu" event temporarily
+            const boundFunc = this.onEditorMenu.bind(this, target);
+            this.app.workspace.on("editor-menu", boundFunc);
+            setTimeout(() => {
+                this.app.workspace.off("editor-menu", boundFunc);
+            }, 100);
+        };
+        this.onEditorMenu = (target, menu) => {
+            let file;
+            if (target.dataset.path) {
+                file = this.app.vault.getAbstractFileByPath(target.dataset.path);
+                if (!(file instanceof require$$0.TFile))
+                    return;
+            }
+            else if (/^http/i.test(target.getAttribute("src"))) {
+                file = target.getAttribute("src");
+            }
+            if (file)
+                this.addContextMenuItem(menu, file);
+        };
+        this.addContextMenuItem = (menu, imageFile) => {
+            menu.addItem(menuItem => {
+                menuItem.setTitle("Copy Image to Clipboard");
+                menuItem.setIcon("image-file");
+                menuItem.onClick(() => __awaiter(this, void 0, void 0, function* () {
+                    let blob;
+                    if (imageFile instanceof require$$0.TFile) {
+                        const buffer = yield this.app.vault.adapter.readBinary(imageFile.path);
+                        const arr = new Uint8Array(buffer);
+                        blob = new Blob([arr], { type: "image/png" });
+                    }
+                    else {
+                        blob = yield (yield fetch(imageFile)).blob();
+                    }
+                    //@ts-ignore
+                    const item = new ClipboardItem({ "image/png": blob });
+                    //@ts-ignore
+                    window.navigator.clipboard.write([item]);
+                }));
             });
-        }); };
-        _this.onImageClick = function (args) {
+        };
+        this.onFileLoad = (file, contentEl, editor, leaf) => {
+            editor.state.fileName = file.path;
+            if (this.settings.showBacklinks) {
+                this.addBackLinks(file, editor, leaf);
+            }
+        };
+        this.onFileUnload = (file, contentEl, editor, leaf) => {
+            try {
+                this.resetCodeMirrorState(file, contentEl, editor);
+                editor.doc.clearHistory();
+                editor.clearGutter("CodeMirror-foldgutter");
+                this.hideMathPreview();
+            }
+            catch (_a) {
+                // console.log("unable to clear editor");
+            }
+        };
+        this.onEditorClose = (file, contentEl, editor, leaf) => {
+            this.removeBackLinks(editor);
+            this.unsetCodeMirrorOptions(editor);
+            setTimeout(() => {
+                var _a, _b;
+                try {
+                    editor.display.renderedView = [];
+                    (_a = editor.display.lineDiv) === null || _a === void 0 ? void 0 : _a.empty();
+                    (_b = editor.display.currentWheelTarget) === null || _b === void 0 ? void 0 : _b.empty();
+                    editor.display = null;
+                    editor.blockHTMLObserver.disconnect();
+                    editor.blockHTMLObserver = null;
+                    Object.keys(editor._handlers).forEach(handler => (editor._handlers[handler] = null));
+                }
+                catch (_c) { }
+            }, 500);
+        };
+        this.mdProcessor = (el) => __awaiter(this, void 0, void 0, function* () {
+            setTimeout(() => {
+                this.injectCM(el);
+            }, 100);
+        });
+        this.onRenderLineBound = onRenderLine.bind(this);
+        this.onImageClick = args => {
             args.breakMark(args.editor, args.marker);
         };
-        _this.updateCodeMirrorOption = obsidian.debounce(function (optionKey, optionValue, refresh) {
-            if (refresh === void 0) { refresh = false; }
-            _this.app.workspace.iterateCodeMirrors(function (cm) {
+        this.updateCodeMirrorOption = require$$0.debounce((optionKey, optionValue, refresh = false) => {
+            this.app.workspace.iterateCodeMirrors(cm => {
                 if (cm && cm.getOption(optionKey) != optionValue) {
                     cm.setOption(optionKey, optionValue);
                     if (refresh)
@@ -4436,10 +6899,8 @@ var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
                 }
             });
         }, 400, true);
-        _this.updateCodeMirrorHandlers = obsidian.debounce(function (eventType, callback, enable, refresh) {
-            if (enable === void 0) { enable = true; }
-            if (refresh === void 0) { refresh = false; }
-            _this.app.workspace.iterateCodeMirrors(function (cm) {
+        this.updateCodeMirrorHandlers = require$$0.debounce((eventType, callback, enable = true, refresh = false) => {
+            this.app.workspace.iterateCodeMirrors(cm => {
                 if (enable)
                     cm.on(eventType, callback);
                 else
@@ -4448,208 +6909,508 @@ var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
                     cm.refresh();
             });
         }, 0, true);
-        return _this;
     }
-    ObsidianCodeMirrorOptionsPlugin.prototype.onload = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: 
-                    // load settings
-                    return [4 /*yield*/, this.loadSettings()];
-                    case 1:
-                        // load settings
-                        _a.sent();
-                        // add the settings tab
-                        this.addSettingTab(new ObsidianCodeMirrorOptionsSettingsTab(this.app, this));
-                        this.app.workspace.onLayoutReady(function () {
-                            _this.registerCodeMirrorSettings();
-                            _this.applyBodyClasses();
-                            setTimeout(function () {
-                                // workaround to ensure our plugin registers properly with Style Settings
-                                _this.app.workspace.trigger("css-change");
-                            }, 1000);
-                        });
-                        this.registerCommands();
-                        return [2 /*return*/];
-                }
+    onload() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // patch the default Obsidian methods, ASAP
+            //@ts-ignore
+            if (this.app.vault.getConfig("legacyEditor"))
+                this.applyMonkeyPatches();
+            // load settings
+            yield this.loadSettings();
+            // add the settings tab
+            this.addSettingTab(new ObsidianCodeMirrorOptionsSettingsTab(this.app, this));
+            //@ts-ignore
+            if (this.app.vault.getConfig("legacyEditor")) {
+                // initial-file-load is a custom event emitted by a patched MarkdownView.onLoadFile
+                this.registerEvent(this.app.workspace.on("initial-file-load", this.onFileLoad));
+                // file-unload is a custom event emitted by a patched MarkdownView.onUnloadFile
+                this.registerEvent(this.app.workspace.on("file-unload", this.onFileUnload));
+                // editor-close is a custom event emitted by a patched MarkdownView.onClose
+                this.registerEvent(this.app.workspace.on("editor-close", this.onEditorClose));
+                this.app.workspace.onLayoutReady(() => {
+                    this.registerCodeMirrorSettings();
+                    this.registerCommands();
+                    setTimeout(() => {
+                        // workaround to ensure our plugin registers properly with Style Settings
+                        this.app.workspace.trigger("css-change");
+                    }, 1000);
+                });
+                document.on("contextmenu", `img.hmd-image`, this.onImageContextMenu, false);
+                document.on("contextmenu", `.rendered-widget img:not(.hmd-image)`, this.onImageContextMenu, false);
+            }
+            this.app.workspace.onLayoutReady(() => {
+                this.applyBodyClasses();
+                setTimeout(() => {
+                    // workaround to ensure our plugin registers properly with Style Settings
+                    this.app.workspace.trigger("css-change");
+                }, 1000);
             });
         });
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.loadSettings = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, _b, _c, _d;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
-                    case 0:
-                        _a = this;
-                        _c = (_b = Object).assign;
-                        _d = [{}, DEFAULT_SETTINGS];
-                        return [4 /*yield*/, this.loadData()];
-                    case 1:
-                        _a.settings = _c.apply(_b, _d.concat([_e.sent()]));
-                        return [2 /*return*/];
-                }
-            });
+    }
+    loadSettings() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.settings = Object.assign({}, DEFAULT_SETTINGS, yield this.loadData());
         });
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.registerCommands = function () {
-        var _this = this;
+    }
+    resetCodeMirrorState(file, contentEl, editor) {
+        // remove any attributes and styles created by the Container Attributes feature
+        if (contentEl) {
+            Object.keys(contentEl.dataset).forEach(el => contentEl.removeAttribute("data-" + el));
+            contentEl.style = null;
+        }
+        // add the current file path to the CodeMirror state for access by native CM methods
+        editor.hmd.Fold.clearAll();
+        editor.hmd.FoldCode.clearAll();
+    }
+    removeBackLinks(editor) {
+        if (editor.backlinksWidget) {
+            editor.backlinksWidget.unload();
+            editor.display.lineDiv.parentElement.removeChild(editor.backlinksWidget.contentEl);
+            editor.backlinksWidget = null;
+        }
+    }
+    removeBacklinksImmediately() {
+        try {
+            //@ts-ignore
+            this.app.workspace.iterateRootLeaves(leaf => this.removeBackLinks(leaf.view.editor.cm));
+        }
+        catch (err) {
+            // console.log(err);
+        }
+    }
+    addBacklinksImmediately() {
+        try {
+            //@ts-ignore
+            this.app.workspace.iterateRootLeaves(leaf => this.addBackLinks(leaf.view.file, leaf.view.editor.cm, leaf));
+        }
+        catch (_a) { }
+    }
+    addBackLinks(file, editor, leaf) {
+        if (!editor.backlinksWidget) {
+            //@ts-ignore
+            editor.backlinksWidget = this.app.viewRegistry.getViewCreatorByType("backlink")(leaf);
+            editor.backlinksWidget.contentEl.setAttribute("cm-ignore-events", "true");
+            editor.display.lineDiv.parentElement.appendChild(editor.backlinksWidget.contentEl);
+        }
+        editor.backlinksWidget.backlink.update = function () {
+            const e = file;
+            this.backlinkFile !== e && this.recomputeBacklink(e), this.unlinkedFile !== e && this.recomputeUnlinked(e);
+            this.updateHeaderTooltip(this.backlinkHeaderEl, this.backlinkCollapsed),
+                this.updateHeaderTooltip(this.unlinkedHeaderEl, this.unlinkedCollapsed);
+        };
+        if (!editor.backlinksWidget._loaded) {
+            editor.backlinksWidget.load();
+        }
+    }
+    hideMathPreview() {
+        const previewEl = document.querySelector("#math-preview");
+        if (previewEl && !previewEl.hasClass("float-win-hidden")) {
+            previewEl.addClass("float-win-hidden");
+        }
+    }
+    applyMonkeyPatches() {
+        // patching onLoadFile to clear CM specific state in order to avoid fold related memory leaks
+        // we also add the current file name to the CM state so that CM native actions have a reference
+        const patchFileLifecycle = around(require$$0.MarkdownView.prototype, {
+            onLoadFile(old) {
+                return function (file) {
+                    try {
+                        this.app.workspace.trigger("initial-file-load", file, this.contentEl, this.editor.cm, this.leaf);
+                    }
+                    catch (_a) { }
+                    return old.call(this, file);
+                };
+            },
+            // @ts-ignore
+            onUnloadFile(old) {
+                return function (file) {
+                    const result = old.call(this);
+                    try {
+                        this.app.workspace.trigger("file-unload", this.file, this.contentEl, this.editor.cm, this.leaf);
+                    }
+                    catch (_a) { }
+                    return result;
+                };
+            },
+            // @ts-ignore
+            onClose(old) {
+                return function () {
+                    try {
+                        this.app.workspace.trigger("editor-close", this.file, this.contentEl, this.editor.cm, this.leaf);
+                    }
+                    catch (_a) { }
+                    return old.call(this);
+                };
+            },
+        });
+        this.register(patchFileLifecycle);
+        // patch the preview mode click handlers so that we get preview context menus on edit mode rendered widgets
+        const patchSourceView = around(require$$0.MarkdownSourceView.prototype, {
+            attachDomEvents(old) {
+                return function () {
+                    // eslint-disable-next-line @typescript-eslint/no-this-alias
+                    const _this = this, editorEl = this.editorEl;
+                    editorEl.addEventListener("mousedown", this.onCodeMirrorMousedown.bind(this)),
+                        editorEl.addEventListener("contextmenu", function (event) {
+                            if (event &&
+                                event.path.length &&
+                                event.path.filter(el => el.hasClass && el.hasClass("rendered-widget")).length &&
+                                event.path[0].tagName !== "IMG") {
+                                return;
+                            }
+                            return _this.clipboardManager.onContextMenu(event);
+                        }, { capture: true }),
+                        editorEl.on("mouseover", ".cm-hmd-internal-link", this.onInternalLinkMouseover.bind(this));
+                };
+            },
+        });
+        this.register(patchSourceView);
+        const patchRenderer = around(require$$0.MarkdownPreviewRenderer.prototype, {
+            onInternalLinkContextMenu(old) {
+                return function (event, el) {
+                    const href = this.getInternalLinkHref(el);
+                    href && this.owner.onInternalLinkRightClick(event, el, href);
+                };
+            },
+            onResize(old) {
+                return function () {
+                    setTimeout(() => {
+                        var _a, _b, _c;
+                        const editor = (_c = (_b = (_a = this.owner.app.workspace.activeLeaf) === null || _a === void 0 ? void 0 : _a.view) === null || _b === void 0 ? void 0 : _b.sourceMode) === null || _c === void 0 ? void 0 : _c.editorEl;
+                        if (editor && !this.widgetHandlersRegistered && this.owner.type === "preview") {
+                            this.widgetHandlersRegistered = true;
+                            editor.on("click", ".rendered-widget a.internal-link", this.onInternalLinkClick.bind(this));
+                            editor.on("auxclick", ".rendered-widget a.internal-link", this.onInternalLinkClick.bind(this));
+                            editor.on("contextmenu", ".rendered-widget a.internal-link", this.onInternalLinkContextMenu.bind(this));
+                            // editor.on("mouseover", ".rendered-widget a.internal-link", this.onInternalLinkMouseover.bind(this));
+                            editor.on("click", ".rendered-widget a.external-link", this.onExternalLinkClick.bind(this));
+                            editor.on("click", ".rendered-widget a.footnote-link", this.onFootnoteLinkClick.bind(this));
+                            editor.on("click", ".rendered-widget .task-list-item-checkbox", this.onCheckboxClick.bind(this));
+                            editor.on("click", ".rendered-widget a.tag", this.onTagClick.bind(this));
+                            editor.on("click", ".rendered-widget a.internal-query", this.onInternalQueryClick.bind(this));
+                            editor.on("click", ".rendered-widget .heading-collapse-indicator", this.onHeadingCollapseClick.bind(this));
+                            editor.on("click", ".rendered-widget li > .list-collapse-indicator", this.onListCollapseClick.bind(this));
+                            // editor.on("click", ".rendered-widget img", this.onImageClick.bind(this));
+                        }
+                    }, 100);
+                    return old.call(this);
+                };
+            },
+            belongsToMe(old) {
+                return function (el) {
+                    // save the original element so we can pass it to the original method
+                    const _el = el;
+                    // check to see if the element is a sibling of a rendered widget
+                    for (; el;) {
+                        if (el.hasClass("rendered-widget") && el.tagName !== "IMG") {
+                            return true;
+                        }
+                        const parentEl = el.parentElement;
+                        if (!parentEl)
+                            return old.call(this, _el);
+                        el = parentEl;
+                    }
+                };
+            },
+        });
+        this.register(patchRenderer);
+    }
+    getHmdOptions(type) {
+        switch (type) {
+            case "hmdFold":
+                return {
+                    image: this.settings.foldImages,
+                    link: this.settings.foldLinks,
+                    html: this.settings.renderHTML,
+                    code: this.settings.renderCode,
+                    math: this.settings.renderMath,
+                    embed: this.settings.renderEmbeds,
+                    emoji: this.settings.renderEmoji,
+                };
+            case "hmdFoldCode":
+                return {
+                    admonition: this.settings.renderAdmonition,
+                    chart: this.settings.renderChart,
+                    query: this.settings.renderQuery,
+                    dataview: this.settings.renderDataview,
+                    tasks: this.settings.renderTasks,
+                };
+            default:
+                assertNever(type);
+        }
+    }
+    updateHmdOptions(type) {
+        return this.updateCodeMirrorOption(type, this.getHmdOptions(type));
+    }
+    registerCommands() {
         this.addCommand({
             id: "toggle-openmd",
             name: "Toggle OpenMD Mode",
-            callback: function () {
-                _this.settings.enableOpenMD = !_this.settings.enableOpenMD;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("mode", _this.settings.enableOpenMD ? "openmd" : "hypermd");
+            callback: () => {
+                this.settings.enableOpenMD = !this.settings.enableOpenMD;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("mode", this.settings.enableOpenMD ? "openmd" : "hypermd");
             },
         });
         this.addCommand({
             id: "toggle-hide-tokens",
             name: "Toggle Hide Markdown Tokens",
-            callback: function () {
-                _this.settings.editModeHideTokens = !_this.settings.editModeHideTokens;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("hmdHideToken", _this.settings.editModeHideTokens ? _this.settings.tokenList : false);
-                _this.applyBodyClasses();
+            callback: () => {
+                this.settings.editModeHideTokens = !this.settings.editModeHideTokens;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("hmdHideToken", this.settings.editModeHideTokens ? this.settings.tokenList : false);
+                this.applyBodyClasses();
             },
         });
         this.addCommand({
             id: "toggle-click-handler",
             name: "Toggle Edit Mode Click Handler",
-            callback: function () {
-                _this.settings.editModeClickHandler = !_this.settings.editModeClickHandler;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("hmdClick", _this.settings.editModeClickHandler);
+            callback: () => {
+                this.settings.editModeClickHandler = !this.settings.editModeClickHandler;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("hmdClick", this.settings.editModeClickHandler);
             },
         });
         this.addCommand({
             id: "toggle-collapse-links",
             name: "Toggle Collapse External Links",
-            callback: function () {
-                _this.settings.foldLinks = !_this.settings.foldLinks;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("hmdFold", !_this.settings.foldImages && !_this.settings.foldLinks
-                    ? false
-                    : {
-                        image: _this.settings.foldImages,
-                        link: _this.settings.foldLinks,
-                    });
+            callback: () => {
+                this.settings.foldLinks = !this.settings.foldLinks;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
             },
         });
         this.addCommand({
             id: "toggle-render-images-inline",
             name: "Toggle Render Images Inline",
-            callback: function () {
-                _this.settings.foldImages = !_this.settings.foldImages;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses();
-                _this.updateCodeMirrorOption("hmdFold", !_this.settings.foldImages && !_this.settings.foldLinks
-                    ? false
-                    : {
-                        image: _this.settings.foldImages,
-                        link: _this.settings.foldLinks,
+            callback: () => {
+                this.settings.foldImages = !this.settings.foldImages;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-html",
+            name: "Toggle Render HTML",
+            callback: () => {
+                this.settings.renderHTML = !this.settings.renderHTML;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-embeds",
+            name: "Toggle Render Embeds",
+            callback: () => {
+                this.settings.renderEmbeds = !this.settings.renderEmbeds;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-math",
+            name: "Toggle Render Math",
+            callback: () => {
+                this.settings.renderMath = !this.settings.renderMath;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-math-preview",
+            name: "Toggle Render Math Preview",
+            callback: () => {
+                this.settings.renderMathPreview = !this.settings.renderMathPreview;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                if (this.settings.renderMathPreview) {
+                    this.app.workspace.iterateCodeMirrors(cm => {
+                        init_math_preview(cm);
                     });
+                }
+                else {
+                    const previewEl = document.querySelector("#math-preview");
+                    if (previewEl) {
+                        document.querySelector("#math-preview").detach();
+                    }
+                    this.app.workspace.iterateCodeMirrors(cm => {
+                        unload_math_preview(cm);
+                    });
+                }
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-code",
+            name: "Toggle Render Code",
+            callback: () => {
+                this.settings.renderCode = !this.settings.renderCode;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFold");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-dataview",
+            name: "Toggle Render Dataview",
+            callback: () => {
+                this.settings.renderDataview = !this.settings.renderDataview;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFoldCode");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-chart",
+            name: "Toggle Render Charts",
+            callback: () => {
+                this.settings.renderChart = !this.settings.renderChart;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFoldCode");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-admonition",
+            name: "Toggle Render Admonitions",
+            callback: () => {
+                this.settings.renderAdmonition = !this.settings.renderAdmonition;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFoldCode");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-query",
+            name: "Toggle Render Search Queries",
+            callback: () => {
+                this.settings.renderQuery = !this.settings.renderQuery;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFoldCode");
+            },
+        });
+        this.addCommand({
+            id: "toggle-render-tasks",
+            name: "Toggle Render Tasks",
+            callback: () => {
+                this.settings.renderTasks = !this.settings.renderTasks;
+                this.saveData(this.settings);
+                this.applyBodyClasses();
+                this.updateHmdOptions("hmdFoldCode");
+            },
+        });
+        this.addCommand({
+            id: "toggle-backlinks-in-editor",
+            name: "Toggle Backlinks in Editor",
+            callback: () => {
+                this.settings.showBacklinks = !this.settings.showBacklinks;
+                this.saveData(this.settings);
+                this.settings.showBacklinks ? this.addBacklinksImmediately() : this.removeBacklinksImmediately();
             },
         });
         this.addCommand({
             id: "toggle-container-attributes",
             name: "Toggle Container Attributes",
-            callback: function () {
-                _this.settings.containerAttributes = !_this.settings.containerAttributes;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorHandlers("renderLine", onRenderLine, _this.settings.containerAttributes, true);
+            callback: () => {
+                this.settings.containerAttributes = !this.settings.containerAttributes;
+                this.saveData(this.settings);
+                this.updateCodeMirrorHandlers("renderLine", this.onRenderLineBound, this.settings.containerAttributes, true);
             },
         });
         this.addCommand({
             id: "toggle-dynamic-cursor-size",
             name: "Toggle Dynamic Cursor Size",
-            callback: function () {
-                _this.settings.dynamicCursor = !_this.settings.dynamicCursor;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("singleCursorHeightPerLine", !_this.settings.dynamicCursor);
+            callback: () => {
+                this.settings.dynamicCursor = !this.settings.dynamicCursor;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("singleCursorHeightPerLine", !this.settings.dynamicCursor);
             },
         });
         this.addCommand({
             id: "toggle-style-active-selection",
             name: "Toggle Style Active Selection",
-            callback: function () {
-                _this.settings.markSelection = !_this.settings.markSelection;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("styleSelectedText", _this.settings.markSelection);
-                _this.applyBodyClasses();
+            callback: () => {
+                this.settings.markSelection = !this.settings.markSelection;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("styleSelectedText", this.settings.markSelection);
+                this.applyBodyClasses();
             },
         });
         this.addCommand({
             id: "toggle-retain-active-line",
             name: "Toggle Retain Active Line on Selection",
-            callback: function () {
-                _this.settings.activeLineOnSelect = !_this.settings.activeLineOnSelect;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("styleActiveLine", _this.settings.activeLineOnSelect ? { nonEmpty: true } : true);
+            callback: () => {
+                this.settings.activeLineOnSelect = !this.settings.activeLineOnSelect;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("styleActiveLine", this.settings.activeLineOnSelect ? { nonEmpty: true } : true);
             },
         });
         this.addCommand({
             id: "toggle-edit-mode-syntax",
             name: "Toggle Edit Mode Syntax Highlighting",
-            callback: function () {
-                _this.settings.syntaxHighlighting = !_this.settings.syntaxHighlighting;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses(true);
+            callback: () => {
+                this.settings.syntaxHighlighting = !this.settings.syntaxHighlighting;
+                this.saveData(this.settings);
+                this.applyBodyClasses(true);
             },
         });
         this.addCommand({
             id: "toggle-preview-mode-syntax",
             name: "Toggle Preview Mode Syntax Highlighting",
-            callback: function () {
-                _this.settings.enablePrismJSStyling = !_this.settings.enablePrismJSStyling;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses(true);
+            callback: () => {
+                this.settings.enablePrismJSStyling = !this.settings.enablePrismJSStyling;
+                this.saveData(this.settings);
+                this.applyBodyClasses(true);
             },
         });
         this.addCommand({
             id: "toggle-codemirror-in-preview-mode",
             name: "Toggle CodeMirror in Preview Mode",
-            callback: function () {
-                _this.settings.enableCMinPreview = !_this.settings.enableCMinPreview;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses(true);
+            callback: () => {
+                this.settings.enableCMinPreview = !this.settings.enableCMinPreview;
+                this.saveData(this.settings);
+                this.applyBodyClasses(true);
             },
         });
         this.addCommand({
             id: "toggle-cm-line-numbers-in-preview-mode",
             name: "Toggle CM Line Numbers in Preview Mode",
-            callback: function () {
-                _this.settings.showLineNums = !_this.settings.showLineNums;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses(true);
+            callback: () => {
+                this.settings.showLineNums = !this.settings.showLineNums;
+                this.saveData(this.settings);
+                this.applyBodyClasses(true);
             },
         });
         this.addCommand({
             id: "toggle-cm-copy-button-in-preview-mode",
             name: "Toggle Copy Button in Preview Mode",
-            callback: function () {
-                _this.settings.copyButton = !_this.settings.copyButton;
-                _this.saveData(_this.settings);
-                _this.applyBodyClasses(true);
+            callback: () => {
+                this.settings.copyButton = !this.settings.copyButton;
+                this.saveData(this.settings);
+                this.applyBodyClasses(true);
             },
         });
         this.addCommand({
             id: "toggle-auto-align-table",
             name: "Toggle Auto Align Tables",
-            callback: function () {
-                _this.settings.autoAlignTables = !_this.settings.autoAlignTables;
-                _this.saveData(_this.settings);
-                _this.updateCodeMirrorOption("hmdTableAlign", _this.settings.autoAlignTables);
+            callback: () => {
+                this.settings.autoAlignTables = !this.settings.autoAlignTables;
+                this.saveData(this.settings);
+                this.updateCodeMirrorOption("hmdTableAlign", this.settings.autoAlignTables);
             },
         });
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.injectCM = function (el) {
+    }
+    injectCM(el) {
         var _a;
         // only get code block elements with a language but not any that have already been colorized
-        var preElement = el.firstChild;
-        var codeElement = (_a = el.firstChild) === null || _a === void 0 ? void 0 : _a.firstChild;
+        const preElement = el.firstChild;
+        const codeElement = (_a = el.firstChild) === null || _a === void 0 ? void 0 : _a.firstChild;
         if (!codeElement)
             return;
         if (codeElement.tagName !== "CODE")
@@ -4665,10 +7426,10 @@ var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
         }
         if (preElement.classList.value.includes("cm-s-obsidian"))
             return;
-        codeElement.classList.forEach(function (className) {
+        codeElement.classList.forEach((className) => {
             if (className.startsWith("language-")) {
                 // set data-lang to the code block language for easier colorize usage
-                var language = className.replace("language-", "");
+                let language = className.replace("language-", "");
                 switch (language) {
                     case "html":
                         language = "htmlmixed";
@@ -4687,54 +7448,60 @@ var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
         CodeMirror.colorize([codeElement], null, this.settings.showLineNums);
         preElement.querySelector(".copy-code-button").remove();
         this.addCopyButton(preElement);
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.addCopyButton = function (element) {
+    }
+    addCopyButton(element) {
         if (this.settings.copyButton) {
-            var codeBlock_1 = element;
-            var copyButton_1 = document.createElement("button");
-            copyButton_1.className = "copy";
-            copyButton_1.type = "button";
+            const codeBlock = element;
+            const copyButton = document.createElement("button");
+            copyButton.className = "copy";
+            copyButton.type = "button";
             // copyButton.ariaLabel = 'Copy code to clipboard';
-            copyButton_1.innerText = "Copy";
-            codeBlock_1.append(copyButton_1);
-            copyButton_1.addEventListener("click", function () {
+            copyButton.innerText = "Copy";
+            codeBlock.append(copyButton);
+            copyButton.addEventListener("click", function () {
                 // exclude line numbers when copying code to clipboard
-                var code = codeBlock_1.querySelector("code");
-                var clone = code.cloneNode(true);
-                clone.findAll("span.cm-linenumber").forEach(function (e) { return e.remove(); });
-                var codeText = clone.textContent.trim();
+                const code = codeBlock.querySelector("code");
+                const clone = code.cloneNode(true);
+                clone.findAll("span.cm-linenumber").forEach(e => e.remove());
+                const codeText = clone.textContent.trim();
                 window.navigator.clipboard.writeText(codeText);
-                copyButton_1.innerText = "Copied";
+                copyButton.innerText = "Copied";
                 setTimeout(function () {
-                    copyButton_1.innerText = "Copy";
+                    copyButton.innerText = "Copy";
                 }, 4000);
             });
         }
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.registerCodeMirrorSettings = function () {
-        var _this = this;
-        this.registerCodeMirror(function (cm) {
-            cm.setOption("styleSelectedText", _this.settings.markSelection);
-            cm.setOption("singleCursorHeightPerLine", !_this.settings.dynamicCursor);
-            cm.setOption("styleActiveLine", _this.settings.activeLineOnSelect ? { nonEmpty: true } : true);
-            if (_this.settings.enableOpenMD)
+    }
+    registerCodeMirrorSettings() {
+        this.registerCodeMirror(cm => {
+            cm.setOption("styleSelectedText", this.settings.markSelection);
+            cm.setOption("singleCursorHeightPerLine", !this.settings.dynamicCursor);
+            cm.setOption("styleActiveLine", this.settings.activeLineOnSelect ? { nonEmpty: true } : true);
+            if (this.settings.enableOpenMD)
                 cm.setOption("mode", "openmd");
-            cm.setOption("hmdHideToken", _this.settings.editModeHideTokens ? _this.settings.tokenList : false);
-            cm.setOption("hmdClick", _this.settings.editModeClickHandler);
-            cm.setOption("hmdTableAlign", _this.settings.autoAlignTables);
-            cm.setOption("cursorBlinkRate", _this.settings.cursorBlinkRate);
-            cm.setOption("hmdFold", { image: _this.settings.foldImages, link: _this.settings.foldLinks });
-            if (_this.settings.containerAttributes)
-                _this.updateCodeMirrorHandlers("renderLine", onRenderLine, true, true);
+            cm.setOption("hmdHideToken", this.settings.editModeHideTokens ? this.settings.tokenList : false);
+            cm.setOption("hmdClick", this.settings.editModeClickHandler);
+            cm.setOption("hmdTableAlign", this.settings.autoAlignTables);
+            cm.setOption("cursorBlinkRate", this.settings.cursorBlinkRate);
+            cm.setOption("hmdFold", this.getHmdOptions("hmdFold"));
+            cm.setOption("hmdFoldCode", this.getHmdOptions("hmdFoldCode"));
+            if (this.settings.renderMathPreview)
+                init_math_preview(cm);
+            if (this.settings.containerAttributes)
+                this.updateCodeMirrorHandlers("renderLine", this.onRenderLineBound, true, true);
         });
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.applyBodyClasses = function (refresh) {
-        if (refresh === void 0) { refresh = false; }
+    }
+    applyBodyClasses(refresh = false) {
         this.settings.editModeHideTokens
             ? !document.body.hasClass("hide-tokens")
                 ? document.body.addClass("hide-tokens")
                 : null
             : document.body.removeClass("hide-tokens");
+        this.settings.styleCheckBox
+            ? !document.body.hasClass("style-check-box")
+                ? document.body.addClass("style-check-box")
+                : null
+            : document.body.removeClass("style-check-box");
         this.settings.markSelection
             ? !document.body.hasClass("style-active-selection")
                 ? document.body.addClass("style-active-selection")
@@ -4765,52 +7532,75 @@ var ObsidianCodeMirrorOptionsPlugin = /** @class */ (function (_super) {
                 ? document.body.addClass("cm-render-images-inline")
                 : null
             : document.body.removeClass("cm-render-images-inline");
+        this.settings.foldLinks
+            ? !document.body.hasClass("cm-collapse-external-links")
+                ? document.body.addClass("cm-collapse-external-links")
+                : null
+            : document.body.removeClass("cm-collapse-external-links");
+        this.settings.renderBanner
+            ? !document.body.hasClass("cm-render-banners")
+                ? document.body.addClass("cm-render-banners")
+                : null
+            : document.body.removeClass("cm-render-banners");
         this.settings.enableCMinPreview
             ? this.registerMarkdownPostProcessor(this.mdProcessor)
-            : obsidian.MarkdownPreviewRenderer.unregisterPostProcessor(this.mdProcessor);
+            : require$$0.MarkdownPreviewRenderer.unregisterPostProcessor(this.mdProcessor);
         if (refresh)
             this.refreshPanes();
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.unsetCodeMirrorOptions = function () {
-        this.app.workspace.iterateCodeMirrors(function (cm) {
+    }
+    unsetCodeMirrorOptions(cm) {
+        cm.setOption("styleSelectedText", false);
+        cm.setOption("singleCursorHeightPerLine", true);
+        cm.setOption("styleActiveLine", true);
+        cm.setOption("mode", "hypermd");
+        cm.setOption("hmdHideToken", false);
+        cm.setOption("hmdFold", { image: false, link: false, html: false, code: false, math: false, emoji: false });
+        cm.setOption("hmdTableAlign", false);
+        cm.setOption("hmdClick", false);
+        cm.setOption("cursorBlinkRate", 530);
+        cm.off("renderLine", this.onRenderLineBound);
+        unload_math_preview(cm);
+        // cm.off("imageClicked", this.onImageClick);
+        cm.refresh();
+    }
+    unsetAllCodeMirrorOptions() {
+        this.app.workspace.iterateCodeMirrors(cm => {
             // revert CodeMirror options back to the CM/Obsidian defaults
-            cm.setOption("styleSelectedText", false);
-            cm.setOption("singleCursorHeightPerLine", true);
-            cm.setOption("styleActiveLine", true);
-            cm.setOption("mode", "hypermd");
-            cm.setOption("hmdHideToken", false);
-            cm.setOption("hmdFold", false);
-            cm.setOption("hmdTableAlign", false);
-            cm.setOption("hmdClick", false);
-            cm.setOption("cursorBlinkRate", 530);
-            cm.off("renderLine", onRenderLine);
-            // cm.off("imageClicked", this.onImageClick);
-            cm.refresh();
+            try {
+                //@ts-ignore
+                cm.hmd.Fold.clearAll();
+                //@ts-ignore
+                cm.hmd.FoldCode.clearAll();
+            }
+            catch (_a) { }
+            this.unsetCodeMirrorOptions(cm);
         });
-        document.body.removeClass("style-active-selection");
-        document.body.removeClass("hide-tokens");
-        document.body.removeClass("fallback-highlighting");
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.refreshPanes = function () {
-        this.app.workspace.getLeavesOfType("markdown").forEach(function (leaf) {
-            if (leaf.view instanceof obsidian.MarkdownView) {
+        document.body.classList.remove("style-active-selection", "style-check-box", "hide-tokens", "fallback-highlighting");
+        document.body.classList.remove("cm-render-banners", "cm-collapse-external-links", "cm-render-images-inline");
+        document.body.classList.remove("unified-cm-highlighting", "cm-show-copy-button-on-pre", "cm-show-line-nums");
+    }
+    refreshPanes() {
+        this.app.workspace.getLeavesOfType("markdown").forEach(leaf => {
+            if (leaf.view instanceof require$$0.MarkdownView) {
                 leaf.view.previewMode.rerender(true);
             }
         });
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.getActiveCmEditor = function () {
+    }
+    getActiveCmEditor() {
         var _a;
-        var view = this.app.workspace.getActiveViewOfType(obsidian.MarkdownView);
+        const view = this.app.workspace.getActiveViewOfType(require$$0.MarkdownView);
+        //@ts-ignore
         if (view)
             return (_a = view.sourceMode) === null || _a === void 0 ? void 0 : _a.cmEditor;
         return null;
-    };
-    ObsidianCodeMirrorOptionsPlugin.prototype.onunload = function () {
-        this.unsetCodeMirrorOptions();
-        obsidian.MarkdownPreviewRenderer.unregisterPostProcessor(this.mdProcessor);
+    }
+    onunload() {
+        this.unsetAllCodeMirrorOptions();
+        require$$0.MarkdownPreviewRenderer.unregisterPostProcessor(this.mdProcessor);
         this.refreshPanes();
-    };
-    return ObsidianCodeMirrorOptionsPlugin;
-}(obsidian.Plugin));
+        document.off("contextmenu", `img.hmd-image`, this.onImageContextMenu, false);
+        document.off("contextmenu", `.rendered-widget img:not(.hmd-image)`, this.onImageContextMenu, false);
+    }
+}
 
 module.exports = ObsidianCodeMirrorOptionsPlugin;

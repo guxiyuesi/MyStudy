@@ -2,6 +2,7 @@ package indi.guxiyuesi.HospitalManage.entity.patient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 叶意
@@ -11,14 +12,14 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Patient {
     private String patientAccount;
     private String patientPassword;
     private String patientName;
     private String patientPhoneNumber;
-    private String Gender;
+    private String patientGender;
     private String patientIDNumber;
     private Long patientId;
     private Integer patientAge;
-    private String address;
 }

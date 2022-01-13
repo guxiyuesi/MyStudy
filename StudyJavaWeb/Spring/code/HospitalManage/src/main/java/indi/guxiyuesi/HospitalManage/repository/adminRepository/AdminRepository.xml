@@ -7,5 +7,28 @@
         select * from administrator where administratorAccount=#{account} and administratorPassword=#{password}
     </select>
 
+    <select id="selectAdminById"
+            parameterType="java.lang.String"
+            resultType="indi.guxiyuesi.HospitalManage.entity.admin.Admin">
+        select * from administrator where administratorId=#{administratorId}
+    </select>
 
+    <update id="updateAdmin"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.admin.Admin">
+        update administrator set administratorName = #{administratorName},
+                                 administratorGender=#{administratorGender},
+                                 administratorPhoneNumber=#{administratorPhoneNumber},
+                                 administratorPassword=#{administratorPassword}
+                            where administratorId=#{administratorId}
+    </update>
+
+    <insert id="insertDrugs"
+            parameterType="indi.guxiyuesi.HospitalManage.entity.drug.Drug">
+        insert into drug(drugId, drugName, drugDescription, drugNumber) values (#{drugId}, #{drugName}, #{drugDescription}, #{drugNumber});
+    </insert>
+
+    <insert id="deleteDrug"
+            parameterType="java.lang.Long">
+        delete from drug where drugId = #{drugId};
+    </insert>
 </mapper>
